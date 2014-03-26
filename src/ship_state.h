@@ -36,8 +36,12 @@ public:
   /// Sets the maximum hp of the ship
   void set_max_hp(uint16_t maxHp) { maxHp_ = maxHp; }
 
+public:
+  /// Draws the ship
+  void Draw();
+
 private:
   Float2 position_;
   float orientation_;
-  uint16_t hp_, maxHp_;
+  uint16_t maxHp_, hp_;
 };
