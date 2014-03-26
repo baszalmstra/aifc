@@ -6,7 +6,7 @@ struct SDL_Window;
 union SDL_Event;
 typedef void *SDL_GLContext;
 
-class ShipState;
+class FactionState;
 
 class Application final
 {
@@ -43,5 +43,5 @@ private:
   SDL_Window *window_;
   SDL_GLContext mainContext;
 
-  std::unique_ptr<ShipState> testShip_;
+  std::unique_ptr<FactionState> testFaction_;
 };

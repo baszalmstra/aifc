@@ -24,6 +24,9 @@ FIND_PACKAGE(SDL2_image REQUIRED)
 SET(Source
   "src/application.cpp"
   "src/application.h"
+  "src/color.h"
+  "src/faction_state.cpp"
+  "src/faction_state.h"
   "src/main.cpp"
   "src/ship_state.cpp"
   "src/ship_state.h"

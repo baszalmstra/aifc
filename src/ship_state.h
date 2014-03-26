@@ -3,11 +3,13 @@
 #include <cstdint>
 #include "float2.h"
 
+class FactionState;
+
 class ShipState
 {
 public:
   /// Default constructor
-  ShipState();
+  ShipState(FactionState &faction);
 
   /// Default destructor
   ~ShipState();
@@ -41,6 +43,7 @@ public:
   void Draw();
 
 private:
+  FactionState &faction_;
   Float2 position_;
   float orientation_;
   uint16_t maxHp_, hp_;

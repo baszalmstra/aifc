@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_video.h>
 #include <SDL_opengl.h>
+#include "faction_state.h"
 #include "ship_state.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -92,7 +93,8 @@ void Application::Draw()
   glOrtho(-halfViewportSize * aspectRatio, halfViewportSize * aspectRatio, -halfViewportSize, halfViewportSize, 0.0f, 1.0f);
 
   // Draw the world
-  testShip_->Draw();
+  for (auto &ship : testFaction_->ships())
+    ship->Draw();
 
   // Preset the view
   SDL_GL_SwapWindow(window_);
@@ -127,7 +129,10 @@ bool Application::Initialize()
   }
 
   // Test
-  testShip_ = std::unique_ptr<ShipState>(new ShipState());
+  testFaction_ = std::unique_ptr<FactionState>(new FactionState("test", Color(1.0f, 0.0f, 0.0f)));
+  testFaction_->CreateShip()->set_position(Float2(10.0f, 0.0f));
+
+  testFaction_->CreateShip();
 
   return true;
 }
