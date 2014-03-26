@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+
 struct SDL_Window;
 union SDL_Event;
 typedef void *SDL_GLContext;
+
+class ShipState;
 
 class Application final
 {
@@ -38,4 +42,6 @@ private:
 private:
   SDL_Window *window_;
   SDL_GLContext mainContext;
+
+  std::unique_ptr<ShipState> testShip_;
 };

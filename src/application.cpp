@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_video.h>
 #include <SDL_opengl.h>
+#include "ship_state.h"
 
 //-------------------------------------------------------------------------------------------------
 Application::Application() :
@@ -76,6 +77,23 @@ void Application::Draw()
   // Actually clear
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // Setup viewport size
+  int vpWidth, vpHeight;
+  SDL_GL_GetDrawableSize(window_, &vpWidth, &vpHeight);
+  glViewport(0, 0, vpWidth, vpHeight);
+
+  // Determine aspect ratio
+  float aspectRatio = (float) vpWidth / vpHeight;
+  const float viewportSize = 50.0f;
+  const float halfViewportSize = viewportSize * 0.5f;
+  
+  // Setup view matrix
+  glLoadIdentity();
+  glOrtho(-halfViewportSize * aspectRatio, halfViewportSize * aspectRatio, -halfViewportSize, halfViewportSize, 0.0f, 1.0f);
+
+  // Draw the world
+  testShip_->Draw();
+
   // Preset the view
   SDL_GL_SwapWindow(window_);
 }
@@ -94,7 +112,7 @@ bool Application::Initialize()
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   // Create a window and a renderer
-  if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE)) == nullptr)
+  if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|SDL_WINDOW_ALLOW_HIGHDPI)) == nullptr)
   {
     SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to initialize SDL graphics: %s", SDL_GetError());
     return false;
@@ -107,6 +125,9 @@ bool Application::Initialize()
     SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to initialize SDL OpenGL: %s", SDL_GetError());
     return false;
   }
+
+  // Test
+  testShip_ = std::unique_ptr<ShipState>(new ShipState());
 
   return true;
 }

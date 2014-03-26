@@ -25,6 +25,8 @@ SET(Source
   "src/application.cpp"
   "src/application.h"
   "src/main.cpp"
+  "src/ship_state.cpp"
+  "src/ship_state.h"
 )
 
 SET(Include
