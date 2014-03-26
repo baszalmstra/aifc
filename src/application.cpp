@@ -76,6 +76,11 @@ void Application::Draw()
   // Actually clear
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // Setup viewport size
+  int vpWidth, vpHeight;
+  SDL_GetWindowSize(window_, &vpWidth, &vpHeight);
+  glViewport(0, 0, vpWidth, vpHeight);
+
   // Preset the view
   SDL_GL_SwapWindow(window_);
 }
@@ -94,7 +99,7 @@ bool Application::Initialize()
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   // Create a window and a renderer
-  if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE)) == nullptr)
+  if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|SDL_WINDOW_ALLOW_HIGHDPI)) == nullptr)
   {
     SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to initialize SDL graphics: %s", SDL_GetError());
     return false;
