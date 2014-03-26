@@ -1,6 +1,11 @@
 #pragma once
 
 #include "float2.h"
+#include "ship_description.h"
+
+#include <cstdint>
+
+typedef uint32_t ShipId;
 
 class ShipInfo {
 
@@ -10,18 +15,26 @@ public:
 
     virtual ~ShipInfo();
 
-    inline int getHP() const { return hp_; }
+    ShipId id() const { return id_; }
 
-    inline const Float2& getPosition() const { return pos_; }
+    int hp() const { return hp_; }
 
-    inline float getOrientation() const { return orientation_; }
+    const Float2& position() const { return pos_; }
+
+    float orientation() const { return orientation_; }
+
+    const ShipDescription& description() const { return description_; }
 
 private:
+
+    ShipId id_;
 
     int hp_;
 
     Float2 pos_;
 
     float orientation_;
+
+    ShipDescription description_;
 
 };
