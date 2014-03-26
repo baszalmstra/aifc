@@ -55,4 +55,5 @@ ADD_EXECUTABLE(aifc
 #--------------------------------------------------------------------------------------------------
 TARGET_LINK_LIBRARIES(aifc
   ${SDL2_LIBRARY}
-  ${SDL2_IMAGE_LIBRARIES})
+  ${SDL2_IMAGE_LIBRARIES}
+  ${OPENGL_gl_LIBRARY})
