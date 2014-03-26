@@ -71,7 +71,7 @@ void Application::Update()
 void Application::Draw()
 {
   // Set the clear color
-  glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
   // Actually clear
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -90,10 +90,21 @@ bool Application::Initialize()
     return false;
   }
 
+  // Create an opengl context
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
   // Create a window and a renderer
-  if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL)) == nullptr)
+  if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE)) == nullptr)
   {
     SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to initialize SDL graphics: %s", SDL_GetError());
+    return false;
+  }
+
+  // Create an opengl context
+  mainContext = SDL_GL_CreateContext(window_);
+  if (!mainContext)
+  {
+    SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to initialize SDL OpenGL: %s", SDL_GetError());
     return false;
   }
 
