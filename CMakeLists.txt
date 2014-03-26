@@ -32,6 +32,8 @@ SET(Include
   "include/ai_input.h"
   "include/ship_info.h"
   "include/float2.h"
+  "include/ship_description.h"
+  "include/thruster_description.h"
   "include/ai/i_ai.h"
   "include/ai/i_ai_plugin.h"
 )
@@ -55,3 +57,8 @@ TARGET_LINK_LIBRARIES(aifc
   ${SDL2_LIBRARY}
   ${SDL2_IMAGE_LIBRARIES}
   ${OPENGL_gl_LIBRARY})
+
+#--------------------------------------------------------------------------------------------------
+# Test AI
+#--------------------------------------------------------------------------------------------------
+ADD_LIBRARY(testai test/testai.cpp test/testai.h)
