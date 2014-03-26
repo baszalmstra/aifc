@@ -35,7 +35,10 @@ SET(Source
 )
 
 SET(Include
-  #"include/")
+  "include/AICommand.h"
+  "include/AIInput.h"
+  "include/ai/IAI.h"
+  "include/ai/IAIPlugin.h"
 )
 
 INCLUDE_DIRECTORIES(
