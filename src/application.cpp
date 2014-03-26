@@ -79,7 +79,7 @@ void Application::Draw()
 
   // Setup viewport size
   int vpWidth, vpHeight;
-  SDL_GetWindowSize(window_, &vpWidth, &vpHeight);
+  SDL_GL_GetDrawableSize(window_, &vpWidth, &vpHeight);
   glViewport(0, 0, vpWidth, vpHeight);
 
   // Determine aspect ratio
