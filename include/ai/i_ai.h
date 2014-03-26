@@ -16,5 +16,3 @@ public:
     void update(const AIInput& input, AICommand& command);
 
 };
-
-#endif

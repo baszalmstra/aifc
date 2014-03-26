@@ -9,5 +9,3 @@ public:
     virtual ~AICommand();
 
 };
-
-#endif
