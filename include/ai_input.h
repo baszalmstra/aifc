@@ -11,14 +11,13 @@ class AIInput
 {
 
 public:
+  AIInput() {};
 
-    AIInput();
+  virtual ~AIInput(){};
 
-    virtual ~AIInput();
+    std::vector<ShipInfo> getMyShipInfo() const { return std::vector<ShipInfo>(); }
 
-    std::vector<ShipInfo> getMyShipInfo() const;
-
-    std::vector<ShipInfo> getEnemyShipInfo() const;
+    std::vector<ShipInfo> getEnemyShipInfo() const { return std::vector<ShipInfo>(); }
 
     const ShipInfo& getShipInfo(ShipId id) const { return ship_info_[id]; }
 

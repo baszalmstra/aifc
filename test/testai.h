@@ -5,11 +5,9 @@
 class TestAI : public IAI {
 
 public:
-
     TestAI();
 
     virtual ~TestAI();
 
-    void update(const AIInput& input, AICommand& command);
-
+    void Update(const AIInput& input, AICommand& command) override;
 };
