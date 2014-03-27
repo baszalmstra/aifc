@@ -3,7 +3,7 @@
 #include <SDL_loadso.h>
 #include <iostream>
 
-typedef IAIPlugin* (_cdecl *CreatePluginFn)();
+typedef IAIPlugin* (*CreatePluginFn)();
 
 //-------------------------------------------------------------------------------------------------
 PluginWrapper::PluginWrapper() : sharedObject_(nullptr)
@@ -28,14 +28,19 @@ PluginWrapper::~PluginWrapper()
 //-------------------------------------------------------------------------------------------------
 bool PluginWrapper::Load(const std::string& path)
 {
-#if _WIN32
+#ifdef _WIN32
   const char* extension = ".dll";
+  const char* prepend = "";
+#elif __APPLE__
+  const char* extension = ".dylib";
+  const char* prepend = "lib";
 #else
   const char* extension = ".so";
+  const char* prepend = "lib";
 #endif
 
   // Load the library
-  std::string pathAndExtensions = path + extension;  
+  std::string pathAndExtensions = std::string(prepend) + path + extension;
   sharedObject_ = SDL_LoadObject(pathAndExtensions.c_str());
   if (sharedObject_ == nullptr)
   {
