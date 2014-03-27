@@ -4,6 +4,9 @@
 #include <SDL_opengl.h>
 #include "faction_state.h"
 #include "ship_state.h"
+#include "plugin_wrapper.h"
+#include "ai/i_ai_plugin.h"
+#include "ai/i_ai.h"
 
 //-------------------------------------------------------------------------------------------------
 Application::Application() :
@@ -66,7 +69,7 @@ bool Application::HandleEvent(const SDL_Event& evt)
 //---------------------------------------------------------------------------------------------------
 void Application::Update()
 {
-
+  testFaction_->Update();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -87,7 +90,7 @@ void Application::Draw()
   float aspectRatio = (float) vpWidth / vpHeight;
   const float viewportSize = 50.0f;
   const float halfViewportSize = viewportSize * 0.5f;
-  
+
   // Setup view matrix
   glLoadIdentity();
   glOrtho(-halfViewportSize * aspectRatio, halfViewportSize * aspectRatio, -halfViewportSize, halfViewportSize, 0.0f, 1.0f);
@@ -128,8 +131,13 @@ bool Application::Initialize()
     return false;
   }
 
+  // Load the plugin with the given name
+  plugin_ = PluginWrapper::LoadPlugin("testai");
+  if (!plugin_)
+    return false;
+
   // Test
-  testFaction_ = std::unique_ptr<FactionState>(new FactionState("test", Color(1.0f, 0.0f, 0.0f)));
+  testFaction_ = std::unique_ptr<FactionState>(new FactionState("test", Color(1.0f, 0.0f, 0.0f), plugin_->plugin()->CreateAI()));
   testFaction_->CreateShip()->set_position(Float2(10.0f, 0.0f));
 
   testFaction_->CreateShip();

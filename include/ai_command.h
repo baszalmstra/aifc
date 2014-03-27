@@ -9,11 +9,11 @@ class AICommand {
 
 public:
 
-    AICommand();
+  AICommand() {};
 
-    virtual ~AICommand();
+  virtual ~AICommand(){};
 
-    void set_thruster(ShipId ship_id, uint32_t thruster_id, float level);
+    void set_thruster(ShipId ship_id, uint32_t thruster_id, float level) {};
 
 private:
 

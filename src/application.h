@@ -7,6 +7,7 @@ union SDL_Event;
 typedef void *SDL_GLContext;
 
 class FactionState;
+class PluginWrapper;
 
 class Application final
 {
@@ -43,5 +44,6 @@ private:
   SDL_Window *window_;
   SDL_GLContext mainContext;
 
+  std::unique_ptr<PluginWrapper> plugin_;
   std::unique_ptr<FactionState> testFaction_;
 };

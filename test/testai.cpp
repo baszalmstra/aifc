@@ -11,7 +11,8 @@ TestAI::~TestAI()
 {
 }
 
-void TestAI::update(const AIInput& input, AICommand& command)
+//-------------------------------------------------------------------------------------------------
+void TestAI::Update(const AIInput& input, AICommand& command)
 {
     std::vector<ShipInfo> my_ships = input.getMyShipInfo();
 

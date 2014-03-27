@@ -28,6 +28,8 @@ SET(Source
   "src/faction_state.cpp"
   "src/faction_state.h"
   "src/main.cpp"
+  "src/plugin_wrapper.cpp"
+  "src/plugin_wrapper.h"
   "src/ship_state.cpp"
   "src/ship_state.h"
 )
@@ -66,4 +68,4 @@ TARGET_LINK_LIBRARIES(aifc
 #--------------------------------------------------------------------------------------------------
 # Test AI
 #--------------------------------------------------------------------------------------------------
-ADD_LIBRARY(testai test/testai.cpp test/testai.h)
+ADD_LIBRARY(testai SHARED test/testai.cpp test/testai.h test/ai_plugin.cpp test/ai_plugin.h)
