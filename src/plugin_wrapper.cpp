@@ -36,7 +36,7 @@ bool PluginWrapper::Load(const std::string& path)
   const char* prepend = "lib";
 #else
   const char* extension = ".so";
-  const char* prepend = "lib";
+  const char* prepend = "./lib";
 #endif
 
   // Load the library
