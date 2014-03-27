@@ -33,6 +33,7 @@ SET(Source
 )
 
 SET(Include
+  "include/math.h"
   "include/ai_command.h"
   "include/ai_input.h"
   "include/ship_info.h"
