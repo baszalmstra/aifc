@@ -14,3 +14,9 @@
 
 # Binary directory ignore that shit
 bin*
+
+# Build directory
+build*
+
+# QtCreator project file
+CMakeLists.txt.user
