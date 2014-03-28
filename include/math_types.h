@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 
 // --------------------------------------------------------------------------------
 
@@ -32,6 +33,12 @@ public:
 
   /// multiplies vector with a scalar
   friend Vec2 operator*(T s, const Vec2& v) { return Vec2(v.x * s, v.y * s); }
+
+  // serialize vector to stream
+  friend std::ostream& operator<< (std::ostream& out, const Vec2& v) {
+      out << "[ " << v.x << " " << v.y << " ]";
+      return out;
+  }
 
   union {
       struct { T x, y; };
@@ -73,6 +80,12 @@ public:
   /// multiplies vector with a scalar
   friend Vec3 operator*(T s, const Vec3& v) { return Vec3(v.x * s, v.y * s, v.z * s); }
 
+  // serialize vector to stream
+  friend std::ostream& operator<< (std::ostream& out, const Vec3& v) {
+      out << "[ " << v.x << " " << v.y << " " << v.z << " ]";
+      return out;
+  }
+
   union {
       struct { T x, y, z; };
       T m[3];
@@ -98,6 +111,8 @@ public:
   /// returns this minus m
   Mat2x2 operator-(const Mat2x2& m) const { return Mat2x2(xx - m.xx, xy - m.xy, yx - m.yx, yy - m.yy); }
 
+  Vec2<T> operator*(const Vec2<T>& v) const { return Vec2<T>(xx * v.x + xy * v.y, yx * v.x + yy * v.y); }
+
   /// return this multiplied by m
   Mat2x2 operator*(const Mat2x2& m) const { return Mat2x2(xx * m.xx + xy * m.yx, xx * m.xy + xy * m.yy,
                                                           yx * m.xx + yy * m.yx, yx * m.xy + yy * m.yy); }
@@ -111,10 +126,20 @@ public:
   /// multiplies vector with a scalar
   friend Mat2x2 operator*(T s, const Mat2x2& m) { return Mat2x2(m.xx * s, m.xy * s, m.yx * s, m.yy * s); }
 
+  static Mat2x2 identity() { return Mat2x2(1, 0, 0, 1); }
+
+  // serialize matrix to stream
+  friend std::ostream& operator<< (std::ostream& out, const Mat2x2& m) {
+      out << "[ " << m.m[0] << " " << m.m[1] << std::endl
+          << "  " << m.m[2] << " " << m.m[3] << " " << " ]";
+      return out;
+  }
+
   union {
       struct { T xx, xy, yx, yy; };
       T m[4];
   };
+
 };
 
 // --------------------------------------------------------------------------------
@@ -127,7 +152,7 @@ public:
   Mat3x3() {}
   Mat3x3(T xx_, T xy_, T xz_, T yx_, T yy_, T yz_, T zx_, T zy_, T zz_)
     : xx(xx_), xy(xy_), xz(xz_), yx(yx_), yy(yy_), yz(yz_), zx(zx_), zy(zy_), zz(zz_) {}
-  Mat3x3(T value) : xx(value), xy(value), xz(value), yx(value), yy(value),yz(value), zx(value), zy(value), zz(value) {}
+  Mat3x3(T value) : xx(value), xy(value), xz(value), yx(value), yy(value), yz(value), zx(value), zy(value), zz(value) {}
 
   ~Mat3x3() {}
 
@@ -161,6 +186,14 @@ public:
                                                                 m.yx * s, m.yy * s, m.yz * s,
                                                                 m.zx * s, m.zy * s, m.zz * s); }
 
+  // serialize matrix to stream
+  friend std::ostream& operator<< (std::ostream& out, const Mat3x3& m) {
+      out << "[ " << m.m[0] << " " << m.m[1] << " " << m.m[2] << std::endl
+          << "  " << m.m[3] << " " << m.m[4] << " " << m.m[5] << std::endl
+          << "  " << m.m[6] << " " << m.m[7] << " " << m.m[8] << " ]";
+      return out;
+  }
+
   union {
       struct { T xx, xy, xz, yx, yy, yz, zx, zy, zz; };
       T m[9];
@@ -169,18 +202,58 @@ public:
 
 // --------------------------------------------------------------------------------
 
+template<typename T>
+class Transform final
+{
+
+public:
+  Transform() {}
+  Transform(const Mat2x2<T>& rot_, const Vec2<T>& pos_ = Vec2<T>(0)) : rot(rot_), pos(pos_) {}
+  Transform(T value) : rot(value), pos(value) {}
+  ~Transform() {}
+
+  Transform operator*(const Mat2x2<T>& r) const { return Transform(rot * r, pos); }
+
+  Transform operator*(const Transform& t) const { return Transform(rot * t.rot, pos + rot * t.pos); }
+
+  // serialize matrix to stream
+  friend std::ostream& operator<< (std::ostream& out, const Transform& p) {
+      out << p.rot << std::endl << p.pos;
+      return out;
+  }
+
+  Mat2x2<T> rot;
+  Vec2<T> pos;
+};
+
+// --------------------------------------------------------------------------------
+
 typedef Vec2<float> Vec2f;
-typedef Vec2<uint16_t> Vec2i16;
-typedef Vec2<uint32_t> Vec2i32;
+typedef Vec2<int16_t> Vec2i16;
+typedef Vec2<int32_t> Vec2i32;
+typedef Vec2<uint16_t> Vec2u16;
+typedef Vec2<uint32_t> Vec2u32;
 
 typedef Vec3<float> Vec3f;
-typedef Vec3<uint16_t> Vec3i16;
-typedef Vec3<uint32_t> Vec3i32;
+typedef Vec3<int16_t> Vec3i16;
+typedef Vec3<int32_t> Vec3i32;
+typedef Vec3<uint16_t> Vec3u16;
+typedef Vec3<uint32_t> Vec3u32;
 
 typedef Mat2x2<float> Mat2x2f;
-typedef Mat2x2<uint16_t> Mat2x2i16;
-typedef Mat2x2<uint32_t> Mat2x2i32;
+typedef Mat2x2<int16_t> Mat2x2i16;
+typedef Mat2x2<int32_t> Mat2x2i32;
+typedef Mat2x2<uint16_t> Mat2x2u16;
+typedef Mat2x2<uint32_t> Mat2x2u32;
 
 typedef Mat3x3<float> Mat3x3f;
-typedef Mat3x3<uint16_t> Mat3x3i16;
-typedef Mat3x3<uint32_t> Mat3x3i32;
+typedef Mat3x3<int16_t> Mat3x3i16;
+typedef Mat3x3<int32_t> Mat3x3i32;
+typedef Mat3x3<uint16_t> Mat3x3u16;
+typedef Mat3x3<uint32_t> Mat3x3u32;
+
+typedef Transform<float> Transformf;
+typedef Transform<int16_t> Transformi16;
+typedef Transform<int32_t> Transformi32;
+typedef Transform<uint16_t> Transformu16;
+typedef Transform<uint32_t> Transformu32;
