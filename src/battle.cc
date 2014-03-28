@@ -3,6 +3,7 @@
 #include "ai/i_ai_plugin.h"
 #include "ai/i_ai.h"
 #include "ship_state.h"
+#include <cstdlib>
 
 //-------------------------------------------------------------------------------------------------
 namespace {
