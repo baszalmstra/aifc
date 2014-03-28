@@ -2,11 +2,12 @@
 #include <SDL.h>
 #include <SDL_video.h>
 #include <SDL_opengl.h>
-#include "faction_state.h"
-#include "ship_state.h"
 #include "plugin_wrapper.h"
 #include "ai/i_ai_plugin.h"
 #include "ai/i_ai.h"
+#include <algorithm>
+#include "battle.h"
+#include <time.h>
 
 //-------------------------------------------------------------------------------------------------
 Application::Application() :
@@ -69,7 +70,7 @@ bool Application::HandleEvent(const SDL_Event& evt)
 //---------------------------------------------------------------------------------------------------
 void Application::Update()
 {
-  testFaction_->Update();
+  battle_->Update();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -96,8 +97,7 @@ void Application::Draw()
   glOrtho(-halfViewportSize * aspectRatio, halfViewportSize * aspectRatio, -halfViewportSize, halfViewportSize, 0.0f, 1.0f);
 
   // Draw the world
-  for (auto &ship : testFaction_->ships())
-    ship->Draw();
+  battle_->Draw();
 
   // Preset the view
   SDL_GL_SwapWindow(window_);
@@ -131,16 +131,19 @@ bool Application::Initialize()
     return false;
   }
 
+  // Initialize random seed
+  srand((uint32_t)time(nullptr));
+
   // Load the plugin with the given name
-  plugin_ = PluginWrapper::LoadPlugin("testai");
-  if (!plugin_)
+  plugins_.emplace_back(PluginWrapper::LoadPlugin("testai"));
+  if (std::any_of(plugins_.cbegin(), plugins_.cend(), [](const std::unique_ptr<PluginWrapper> &wrapper) { return !wrapper; }))
     return false;
 
-  // Test
-  testFaction_ = std::unique_ptr<FactionState>(new FactionState("test", Color(1.0f, 0.0f, 0.0f), plugin_->plugin()->CreateAI()));
-  testFaction_->CreateShip()->set_position(Float2(10.0f, 0.0f));
-
-  testFaction_->CreateShip();
+  // Create a battle
+  std::vector<IAIPlugin*> plugins;
+  std::transform(plugins_.begin(), plugins_.end(), std::back_inserter<std::vector<IAIPlugin*>>(plugins), [](const std::unique_ptr<PluginWrapper> &wrapper) { return wrapper->plugin(); });
+  battle_ = std::unique_ptr<Battle>(new Battle());
+  battle_->Initialize(plugins);
 
   return true;
 }
