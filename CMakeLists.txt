@@ -34,7 +34,9 @@ SET(Internal_Source
   "src/plugin_wrapper.cpp"
   "src/plugin_wrapper.h"
   "src/ship_state.cpp"
-  "src/ship_state.h")
+  "src/ship_state.h"
+  "src/action_buffer.h"
+  "src/action_buffer.cc")
 
 
 SET(Public_Source
