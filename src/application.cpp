@@ -11,7 +11,8 @@
 
 //-------------------------------------------------------------------------------------------------
 Application::Application() :
-  window_(nullptr)
+  window_(nullptr),
+  remainingUpdateTime_(0.0f)
 {
 
 }
@@ -74,8 +75,14 @@ void Application::Update()
   std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
   std::chrono::duration<float> timeSinceLastFrame = now - lastTime_;
   lastTime_ = now;
-  
-  battle_->Update(timeSinceLastFrame.count());
+
+  remainingUpdateTime_ += timeSinceLastFrame.count();
+  const float timeStep = 1 / 80.0f;
+  while (remainingUpdateTime_ >= timeStep)
+  {
+    remainingUpdateTime_ -= timeStep;
+    battle_->Update(timeStep);
+  }
 }
 
 //---------------------------------------------------------------------------------------------------

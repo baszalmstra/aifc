@@ -1,4 +1,5 @@
 #pragma once
+
 #include "entity.h"
 
 class FactionState;
@@ -21,5 +22,4 @@ public:
 private:
   const FactionState& faction_;
   const float energy_;
-
 };

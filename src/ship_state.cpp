@@ -9,7 +9,7 @@ ShipState::ShipState(FactionState &faction, uint32_t id) :
   faction_(faction),
   maxHp_(100),
   hp_(maxHp_),
-  force_(8.0f), torque_(1.0f),
+  force_(0.0f), torque_(0.0f),
   mass_(1.0f)
 {
 

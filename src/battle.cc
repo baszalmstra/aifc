@@ -74,16 +74,27 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
     factions_.emplace_back(new FactionState(i, ai->name(), Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f), ai->CreateAI(i)));
   }
 
-  // Create a few ships per faction
-  for (auto &faction : factions_)
-  { 
-    for (uint32_t i = 0; i < numShips; ++i)
-    {
-      ShipState *ship = faction->CreateShip();
-      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
-                                (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
-    }
-  }
+//  // Create a few ships per faction
+//  for (auto &faction : factions_)
+//  {
+//    for (uint32_t i = 0; i < numShips; ++i)
+//    {
+//      ShipState *ship = faction->CreateShip();
+//      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
+//                                (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
+//    }
+//  }
+
+  ShipState* ship0 = factions_[0]->CreateShip();
+  ship0->set_position(Vec2f(-5, 0));
+  ship0->set_orientation(-1);
+  ship0->set_force(1);
+
+  ShipState* ship1 = factions_[1]->CreateShip();
+  ship1->set_position(Vec2f(5, 0));
+  ship1->set_orientation(1);
+  ship1->set_force(1);
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -116,10 +127,34 @@ void Battle::Update(float deltaTime)
   // Let the faction update based on the state of the world
   for (auto &faction : factions_)
     faction->Update(input);
+
+  // Check collisions
+  for (auto &faction1 : factions_) {
+      for (auto &ship1 : faction1->ships()) {
+          for (auto &faction2 : factions_) {
+              for (auto &ship2 : faction2->ships()) {
+                  if (ship1 != ship2 && TestCollision(*ship1, *ship2, deltaTime)) {
+                      std::cout << "Collision!" << std::endl;
+                  }
+              }
+          }
+
+          for(auto &bullet : bullets_) {
+              if (TestCollision(*ship1, *bullet, deltaTime)) {
+                  std::cout << "Bullet collision!" << std::endl;
+              }
+          }
+
+      }
+  }
+
+
   
   // Update all bullets
   for(auto &bullet : bullets_)
     bullet->Update(deltaTime);
+
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -172,6 +207,6 @@ bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
     float t0 = (-b - sqrt(d)) / (2 * a);
     float t1 = (-b + sqrt(d)) / (2 * a);
 
-    return (t0 > 0 && t0 < dt) || (t1 > 0 && t1 < dt);
+    return (t0 >= 0 && t0 <= dt) || (t1 >= 0 && t1 <= dt);
 }
 

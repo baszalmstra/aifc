@@ -3,7 +3,12 @@
 #include <SDL_opengl.h>
 #include <cmath>
 
+<<<<<<< HEAD
 Bullet::Bullet(const FactionState & faction) :
+=======
+//---------------------------------------------------------------------------------------------------
+Bullet::Bullet(FactionState & faction) :
+>>>>>>> 2a90ef693c083d106a1b90585a4c0311dc21f4c9
   faction_(faction),
   energy_(0.0f)
 {
@@ -11,13 +16,14 @@ Bullet::Bullet(const FactionState & faction) :
   
 }
 
-
+//---------------------------------------------------------------------------------------------------
 void Bullet::Update(float deltaTime)
 {
   
   
 }
 
+//---------------------------------------------------------------------------------------------------
 void Bullet::Draw()
 {
   Vec2f pos(0.0f, std::fmod((float) 0.0f * 100, 50.0f));
@@ -26,11 +32,10 @@ void Bullet::Draw()
   float orientation_ = 0;
   float dirY = std::cos(orientation_);
   float dirX = std::sin(orientation_);
-  const float width = 0.2f;
-  const float height = 1.8f;
+  const float width = 0.2f * energy_;
+  const float height = 1.8f * energy_;
 
   const float halfWidth = width*0.5f;
-
   glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
   glVertex3f(height*0.2f * -dirX + pos.x, height*0.2f * dirY + pos.y, 0.0f);
   glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
