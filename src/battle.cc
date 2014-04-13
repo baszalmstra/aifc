@@ -5,6 +5,7 @@
 #include "ship_state.h"
 #include "ship_info.h"
 #include "ai_input.h"
+#include "bullet.h"
 #include <cstdlib>
 #include <iostream>
 #include <SDL_opengl.h>
@@ -114,30 +115,19 @@ void Battle::Update(float deltaTime)
   // Let the faction update based on the state of the world
   for (auto &faction : factions_)
     faction->Update(input);
+  
+  // Update all bullets
+  for(auto &bullet : bullets_)
+    bullet->Update();
 }
 
 //-------------------------------------------------------------------------------------------------
 void Battle::Draw()
 {
-  Float2 pos(0.0f, std::fmod((float)battleTime_*100, 50.0f));
-
   // Draw all bullets
-  float orientation_ = 0;
-  float dirY = std::cos(orientation_);
-  float dirX = std::sin(orientation_);
-  const float width = 0.2f;
-  const float height = 1.8f;
-
-  const float halfWidth = width*0.5f;
   glBegin(GL_TRIANGLES);
-    glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-    glVertex3f(height*0.2f * -dirX + pos.x, height*0.2f * dirY + pos.y, 0.0f);
-    glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
-    glVertex3f(halfWidth*dirY + pos.x, halfWidth*dirX + pos.y, 0.0f);
-    glVertex3f(halfWidth*dirY + pos.x, halfWidth*dirX + pos.y, 0.0f);
-    glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
-    glColor4f(0.0f, 0.1f, 0.0f, 0.3f);
-    glVertex3f(-height*0.8f*-dirX + pos.x, -height*0.8f*dirY + pos.y, 0.0f);
+  for (auto &bullet : bullets_)
+    bullet->Draw();
   glEnd();
 
   // Draw all ships

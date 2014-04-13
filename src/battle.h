@@ -6,6 +6,7 @@
 
 class IAIPlugin;
 class FactionState;
+class Bullet;
 
 class Battle final
 {
@@ -31,4 +32,5 @@ public:
 private:
   std::vector<std::unique_ptr<FactionState>> factions_;
   double battleTime_;
+  std::vector<std::unique_ptr<Bullet>> bullets_;
 };
