@@ -1,11 +1,11 @@
 #pragma once
 
+#include "entity.h"
 #include <cstdint>
-#include "float2.h"
 
 class FactionState;
 
-class ShipState
+class ShipState : public Entity
 {
 public:
   /// Default constructor
@@ -13,18 +13,6 @@ public:
 
   /// Default destructor
   ~ShipState();
-
-  /// Returns the position of the ship
-  const Float2& position() const { return position_; }
-
-  /// Sets the position of the ship
-  void set_position(const Float2& position) { position_ = position; }
-
-  /// Returns the orientation of the ship
-  float orientation() const { return orientation_; }
-
-  /// Sets the orientation of the ship
-  void set_orientation(float orientation) { orientation_ = orientation; }
 
   /// Returns the hp of the ship
   uint16_t hp() const { return hp_; }
@@ -56,27 +44,16 @@ public:
   /// Returns the mass of the ship
   float mass() const { return mass_; }
 
-  /// Returns the velocity of the ship
-  const Float2& velocity() const { return velocity_; }
-
-  /// Returns the angular velocity
-  float angular_velocity() const { return angularVelocity_; }
-
-  /// Returns the collision radius of the ship
-  float collision_radius() const { return 0.5f; }
-
 public:
   /// Draws the ship
-  void Draw();
+  void Draw() override;
 
   /// Updates the ship based on its torque and linear force
-  void Update(float deltaTime);
+  void Update(float deltaTime) override;
 
 private:
   uint32_t id_;
   FactionState &faction_;
-  Float2 position_, velocity_;
-  float orientation_, angularVelocity_;
   uint16_t maxHp_, hp_;
   float force_, torque_;
   float mass_;

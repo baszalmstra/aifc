@@ -8,6 +8,8 @@ public:
 
   void Draw();
 
+  float collision_radius() const;
+
 private:
 
 };
