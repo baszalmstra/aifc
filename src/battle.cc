@@ -43,7 +43,8 @@ namespace {
 
 //-------------------------------------------------------------------------------------------------
 Battle::Battle() :
-  battleTime_(0.0f)
+  battleTime_(0.0f),
+  bounds_(100.0f, 100.0f)
 {
 
 }
@@ -58,7 +59,7 @@ Battle::~Battle()
 void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 {
   const uint32_t numAIs = 2;
-  const uint32_t numShips = 3;
+  const uint32_t numShips = 10;
 
   // Initialize random ais
   uint32_t randOffset = rand() % 4;
@@ -74,18 +75,21 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
     factions_.emplace_back(new FactionState(i, ai->name(), Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f), ai->CreateAI(i)));
   }
 
-//  // Create a few ships per faction
-//  for (auto &faction : factions_)
-//  {
-//    for (uint32_t i = 0; i < numShips; ++i)
-//    {
-//      ShipState *ship = faction->CreateShip();
-//      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
-//                                (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
-//    }
-//  }
+  // Create a few ships per faction
+  for (auto &faction : factions_)
+  {
+    for (uint32_t i = 0; i < numShips; ++i)
+    {
+      ShipState *ship = faction->CreateShip();
+      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
+                                (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
+      ship->set_torque(0.1f);
+      ship->set_force(1.0f);
+      ship->set_orientation(rand() / 1000.0f);
+    }
+  }
 
-  ShipState* ship0 = factions_[0]->CreateShip();
+  /*ShipState* ship0 = factions_[0]->CreateShip();
   ship0->set_position(Vec2f(-5, 0));
   ship0->set_orientation(-1);
   ship0->set_force(1);
@@ -93,7 +97,7 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
   ShipState* ship1 = factions_[1]->CreateShip();
   ship1->set_position(Vec2f(5, 0));
   ship1->set_orientation(1);
-  ship1->set_force(1);
+  ship1->set_force(1);*/
 
 }
 
@@ -130,31 +134,55 @@ void Battle::Update(float deltaTime)
 
   // Check collisions
   for (auto &faction1 : factions_) {
-      for (auto &ship1 : faction1->ships()) {
-          for (auto &faction2 : factions_) {
-              for (auto &ship2 : faction2->ships()) {
-                  if (ship1 != ship2 && TestCollision(*ship1, *ship2, deltaTime)) {
-                      std::cout << "Collision!" << std::endl;
-                  }
-              }
-          }
+    for (auto &ship1 : faction1->ships()) {
 
-          for(auto &bullet : bullets_) {
-              if (TestCollision(*ship1, *bullet, deltaTime)) {
-                  std::cout << "Bullet collision!" << std::endl;
-              }
-          }
-
+      // Make sure ship isn't out of bounds yet
+      if (!in_bounds(ship1->position()))
+      {
+        std::cout << "Ship flew out of bounds!" << std::endl;
+        ship1->set_hp(0);
+        continue;
       }
+      
+      // Always fire
+      Fire(*ship1);
+
+      // Check for ship ship collision
+      for (auto &faction2 : factions_) {
+        for (auto &ship2 : faction2->ships()) {
+            if (!ship2->is_dead() && ship1 != ship2 && TestCollision(*ship1, *ship2, deltaTime)) {
+              ship1->set_hp(0);
+              ship2->set_hp(0);
+              std::cout << "Ship collision" << std::endl;
+            }
+        }
+      }
+
+      // Check for ship ship collision
+      for(auto &bullet : bullets_) {
+        if (TestCollision(*ship1, *bullet, deltaTime)) {
+          ship1->OnHit(*bullet);
+          bullet->set_destroyed();
+          std::cout << "Ship destroyed by bullet" << std::endl;
+        }
+      }
+    }
   }
 
-
+  // Walk over all ships and remove dead ones
+  for (auto &faction : factions_)
+    faction->RemoveDeadShips();
   
   // Update all bullets
-  for(auto &bullet : bullets_)
+  for (auto it = bullets_.begin(); it != bullets_.end();)
+  {
+    auto &bullet = *it;
     bullet->Update(deltaTime);
-
-
+    if (!in_bounds(bullet->position()) || bullet->is_destroyed())
+      it = bullets_.erase(it);
+    else
+      ++it;
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -178,11 +206,20 @@ void Battle::Draw()
 //-------------------------------------------------------------------------------------------------
 void Battle::Fire(ShipState& ship)
 {
-  // Create bullet and set parameters, velocity still needs to be set!
-  Bullet* bullet = new Bullet(ship.faction());
-  bullet->set_position(ship.position());
+  if (!ship.can_fire())
+    return;
+
+  float energy = ship.weapon_energy();
+  ship.set_weapon_energy(0.0f);
+  
+  
+  Bullet* bullet = new Bullet(ship.faction(), energy);
+
+  Vec2f direction(-std::sin(ship.orientation()), std::cos(ship.orientation()));
+
+  bullet->set_position(ship.position() + bullet->height() * direction);
   bullet->set_orientation(ship.orientation());
-  // TODO: set velocity
+  bullet->set_velocity(direction * 50.0f);
   
   bullets_.emplace_back(bullet);
 }
@@ -209,4 +246,3 @@ bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
 
     return (t0 >= 0 && t0 <= dt) || (t1 >= 0 && t1 <= dt);
 }
-

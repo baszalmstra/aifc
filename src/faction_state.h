@@ -29,6 +29,9 @@ public:
   /// Returns a vector with all the ships of this faction
   const std::vector<std::unique_ptr<ShipState>> &ships() const { return ships_; }
 
+  /// Removes dead ships from the faction
+  void RemoveDeadShips();
+
   /// Updates the AI of the faction
   void Update(const AIInput& worldState) const;
 
