@@ -1,9 +1,9 @@
 #pragma once
-#include "float2.h"
+#include "entity.h"
 
 class FactionState;
 
-class Bullet
+class Bullet : public Entity
 {
 public:
   Bullet(FactionState &faction);
