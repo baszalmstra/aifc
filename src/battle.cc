@@ -195,6 +195,6 @@ bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
     float t0 = (-b - sqrt(d)) / (2 * a);
     float t1 = (-b + sqrt(d)) / (2 * a);
 
-    return (t0 > 0 && t0 < dt) || (t1 > 0 && t1 < dt);
+    return (t0 >= 0 && t0 <= dt) || (t1 >= 0 && t1 <= dt);
 }
 
