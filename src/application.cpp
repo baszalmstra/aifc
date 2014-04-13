@@ -11,7 +11,8 @@
 
 //-------------------------------------------------------------------------------------------------
 Application::Application() :
-  window_(nullptr)
+  window_(nullptr),
+  remainingUpdateTime_(0.0f)
 {
 
 }
@@ -30,6 +31,7 @@ int Application::Run()
     return -1;
 
   // Main loop
+  lastTime_ = std::chrono::high_resolution_clock::now();
   while (ProcessEvents())
   {
     Update();
@@ -71,10 +73,16 @@ bool Application::HandleEvent(const SDL_Event& evt)
 void Application::Update()
 {
   std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> timeSinceLastFrame = now - lastTime_;
+  std::chrono::duration<float> timeSinceLastFrame = now - lastTime_;
   lastTime_ = now;
-  
-  battle_->Update(timeSinceLastFrame.count());
+
+  remainingUpdateTime_ += timeSinceLastFrame.count();
+  const float timeStep = 1 / 80.0f;
+  while (remainingUpdateTime_ >= timeStep)
+  {
+    remainingUpdateTime_ -= timeStep;
+    battle_->Update(timeStep);
+  }
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -119,6 +127,7 @@ bool Application::Initialize()
 
   // Create an opengl context
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8); // Disable if performance gets crappy
 
   // Create a window and a renderer
   if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|SDL_WINDOW_ALLOW_HIGHDPI)) == nullptr)

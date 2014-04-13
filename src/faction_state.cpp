@@ -34,4 +34,7 @@ void FactionState::Update(const AIInput& worldState) const
 {
   AICommand command;
   ai_->Update(worldState, command);
+
+  for (auto &ship : ships_)
+    ship->Update(worldState.delta_time());
 }
