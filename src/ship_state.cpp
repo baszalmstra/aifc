@@ -1,7 +1,15 @@
 #include "ship_state.h"
 #include "faction_state.h"
+#include "bullet.h"
 #include <SDL_opengl.h>
 #include <cmath>
+#include <algorithm>
+
+//-------------------------------------------------------------------------------------------------
+namespace {
+  const float MaxWeaponEnergy = 100.0f;
+  const float MinWeaponFireThreshold = 10.0f;
+}
 
 //-------------------------------------------------------------------------------------------------
 ShipState::ShipState(FactionState &faction, uint32_t id) :
@@ -10,7 +18,10 @@ ShipState::ShipState(FactionState &faction, uint32_t id) :
   maxHp_(100),
   hp_(maxHp_),
   force_(0.0f), torque_(0.0f),
-  mass_(1.0f)
+  mass_(1.0f), 
+  weaponEnergy_(0.0f),
+  weaponRechargeRate_(50.0f),
+  hitTime_(0.0f)
 {
 
 }
@@ -29,7 +40,10 @@ void ShipState::Draw()
   glRotatef(orientation() * (180/3.141592654f), 0.0f, 0.0f, 1.0f);
 
   glBegin(GL_TRIANGLES);
-    glColor4fv(faction_.color());
+    if (hitTime_ > 0)
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    else
+      glColor4fv(faction_.color());
     glVertex3f(0.5f, 0.0f, 0.0f);
     glVertex3f(0.0f, 1.0f, 0.0f);
     glVertex3f(0.0f, 0.2f, 0.0f);
@@ -58,5 +72,30 @@ void ShipState::Update(float deltaTime)
 
   // Update the position
   set_position(position() + velocity() * deltaTime);
-  
+
+  // Add weapon energy
+  weaponEnergy_ = std::min(MaxWeaponEnergy, weaponEnergy_ + weaponRechargeRate_ * deltaTime);  
+
+  hitTime_ -= deltaTime;
+}
+
+//-------------------------------------------------------------------------------------------------
+bool ShipState::can_fire() const
+{
+  return weaponEnergy_ >= MinWeaponFireThreshold;
+}
+
+//-------------------------------------------------------------------------------------------------
+bool ShipState::OnHit(const Bullet& bullet)
+{
+  hitTime_ = 0.2f;
+
+  if (bullet.energy() > hp())
+  {
+    hp_ = 0;
+    return true;
+  }
+
+  hp_ -= (uint16_t)bullet.energy();
+  return false;
 }

@@ -38,3 +38,13 @@ void FactionState::Update(const AIInput& worldState) const
   for (auto &ship : ships_)
     ship->Update(worldState.delta_time());
 }
+
+//---------------------------------------------------------------------------------------------------
+void FactionState::RemoveDeadShips()
+{
+  for (auto it = ships_.begin(); it != ships_.end();)
+    if ((*it)->is_dead())
+      it = ships_.erase(it);
+    else
+      ++it;
+}

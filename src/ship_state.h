@@ -5,6 +5,7 @@
 
 class FactionState;
 
+class Bullet;
 class ShipState : public Entity
 {
 public:
@@ -44,7 +45,23 @@ public:
   /// Returns the mass of the ship
   float mass() const { return mass_; }
   
+  /// Returns the faction to which this ship belongs
   const FactionState& faction() { return faction_; }
+
+  /// Returns the amount of weapon energy has been built up
+  float weapon_energy() const { return weaponEnergy_; }
+
+  /// Sets the amount of weapon energy
+  void set_weapon_energy(float energy) { weaponEnergy_ = energy; }
+
+  /// Returns true if the ship can fire
+  bool can_fire() const;
+
+  /// Called when the ship is hit by a bullet. Returns true if the ship died
+  bool OnHit(const Bullet &bullet);
+
+  /// Returns true if the ship died
+  bool is_dead() const { return hp_ == 0; }
 
 public:
   /// Draws the ship
@@ -59,4 +76,7 @@ private:
   uint16_t maxHp_, hp_;
   float force_, torque_;
   float mass_;
+  float weaponEnergy_, weaponRechargeRate_;
+
+  float hitTime_;
 };

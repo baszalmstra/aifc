@@ -7,11 +7,20 @@ class FactionState;
 class Bullet : public Entity
 {
 public:
-  Bullet(const FactionState& faction);
+  Bullet(const FactionState& faction, float energy);
   
 public:
   /// Returns the bullet's energy
-  const float energy() { return energy_; }
+  float energy() const { return energy_; }
+
+  /// Returns the height of the bullet
+  float height() const { return height_; }
+
+  /// Returns true if the bullet is destroyed
+  bool is_destroyed() const { return destroyed_; }
+
+  /// Mark the bullet as destroyed so it will be garbage collected
+  void set_destroyed(bool destroyed = true) { destroyed_ = destroyed; }
 
 public:
   void Update(float deltaTime);
@@ -22,4 +31,7 @@ public:
 private:
   const FactionState& faction_;
   const float energy_;
+  
+  float height_;
+  bool destroyed_;
 };
