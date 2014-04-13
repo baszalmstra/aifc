@@ -33,7 +33,7 @@ const char* TestAIPlugin::version() const
 }
 
 //-------------------------------------------------------------------------------------------------
-std::unique_ptr<IAI> TestAIPlugin::CreateAI() const
+std::unique_ptr<IAI> TestAIPlugin::CreateAI(uint32_t id) const
 {
   return std::unique_ptr<IAI>(new TestAI());
 }

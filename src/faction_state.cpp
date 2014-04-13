@@ -5,7 +5,8 @@
 #include "ai_command.h"
 
 //---------------------------------------------------------------------------------------------------
-FactionState::FactionState(const std::string &name, const Color& color, std::unique_ptr<IAI> ai) :
+FactionState::FactionState(uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai) :
+  id_(id),
   name_(name),
   color_(color),
   ai_(std::move(ai))
@@ -22,16 +23,15 @@ FactionState::~FactionState()
 //---------------------------------------------------------------------------------------------------
 ShipState *FactionState::CreateShip()
 {
-  std::unique_ptr<ShipState> ship(new ShipState(*this));
+  std::unique_ptr<ShipState> ship(new ShipState(*this, id_ | (uint32_t) (ships_.size()) << 3));
   ShipState *shipPtr = ship.get();
   ships_.emplace_back(std::move(ship));
   return shipPtr;
 }
 
 //---------------------------------------------------------------------------------------------------
-void FactionState::Update(double deltaTime)
+void FactionState::Update(const AIInput& worldState) const
 {
-  AIInput input;
   AICommand command;
-  ai_->Update(input, command);
+  ai_->Update(worldState, command);
 }

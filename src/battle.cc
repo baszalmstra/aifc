@@ -3,6 +3,8 @@
 #include "ai/i_ai_plugin.h"
 #include "ai/i_ai.h"
 #include "ship_state.h"
+#include "ship_info.h"
+#include "ai_input.h"
 #include <cstdlib>
 
 //-------------------------------------------------------------------------------------------------
@@ -43,7 +45,7 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
   {
     uint32_t rndIdx = rand();
     IAIPlugin* ai = ais[rndIdx % ais.size()];
-    factions_.emplace_back(new FactionState(ai->name(), randomColors[rndIdx % randomColorCount], ai->CreateAI()));
+    factions_.emplace_back(new FactionState(i, ai->name(), randomColors[rndIdx % randomColorCount], ai->CreateAI(i)));
   }
 
   // Create a few ships per faction
@@ -61,8 +63,30 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 //-------------------------------------------------------------------------------------------------
 void Battle::Update(double deltaTime)
 {
+  std::vector<ShipInfo> shipInfos;
+  std::vector<uint16_t> factionOffsets;
+
+  // Gather info on all ships
+  const size_t numAis = factions_.size();
+  for (uint32_t i = 0; i < numAis; ++i)
+  {
+    factionOffsets.push_back(static_cast<uint16_t>(shipInfos.size()));
+    auto& faction = factions_[i];
+    for (auto &ship : faction->ships())
+      shipInfos.emplace_back(
+      i, ship->id(),
+      ship->hp(), ship->max_hp(),
+      ship->position(), ship->orientation());
+  }
+
+  // Create the input buffer
+  AIInput input(deltaTime, 
+    std::move(shipInfos), 
+    std::move(factionOffsets));
+
+  // Let the faction update based on the state of the world
   for (auto &faction : factions_)
-    faction->Update(deltaTime);
+    faction->Update(input);
 }
 
 //-------------------------------------------------------------------------------------------------

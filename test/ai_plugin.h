@@ -12,7 +12,7 @@ public:
   virtual ~TestAIPlugin();
 
   // Creates an AI to play against another AI in a single epic match
-  std::unique_ptr<IAI> CreateAI() const override;
+  std::unique_ptr<IAI> CreateAI(uint32_t id) const override;
 
   // Returns the name of the plugin
   const char* name() const override;

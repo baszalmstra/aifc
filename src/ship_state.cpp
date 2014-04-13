@@ -3,7 +3,8 @@
 #include <SDL_opengl.h>
 
 //-------------------------------------------------------------------------------------------------
-ShipState::ShipState(FactionState &faction) :
+ShipState::ShipState(FactionState &faction, uint32_t id) :
+  id_(id),
   faction_(faction),
   position_(0.0f, 0.0f),
   orientation_(0.0f),

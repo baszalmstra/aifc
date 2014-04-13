@@ -10,7 +10,7 @@ public:
   virtual ~IAIPlugin() {};
 
   // Creates an AI to play against another AI in a single epic match
-  virtual std::unique_ptr<IAI> CreateAI() const = 0;
+  virtual std::unique_ptr<IAI> CreateAI(uint32_t id) const = 0;
 
   // Returns the name of the plugin
   virtual const char* name() const = 0;

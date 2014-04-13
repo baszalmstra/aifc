@@ -9,7 +9,7 @@ class ShipState
 {
 public:
   /// Default constructor
-  ShipState(FactionState &faction);
+  ShipState(FactionState &faction, uint32_t id);
 
   /// Default destructor
   ~ShipState();
@@ -38,11 +38,15 @@ public:
   /// Sets the maximum hp of the ship
   void set_max_hp(uint16_t maxHp) { maxHp_ = maxHp; }
 
+  /// Returns the id of the ship
+  uint32_t id() const { return id_; }
+
 public:
   /// Draws the ship
   void Draw();
 
 private:
+  uint32_t id_;
   FactionState &faction_;
   Float2 position_;
   float orientation_;

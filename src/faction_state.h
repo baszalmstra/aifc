@@ -7,12 +7,13 @@
 
 class ShipState;
 class IAI;
+class AIInput;
 
 class FactionState
 {
 public:
   /// Default constructor
-  FactionState(const std::string &name, const Color& color, std::unique_ptr<IAI> ai);
+  FactionState(uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai);
 
   /// Default destructor
   ~FactionState();
@@ -27,12 +28,13 @@ public:
   const std::vector<std::unique_ptr<ShipState>> &ships() const { return ships_; }
 
   /// Updates the AI of the faction
-  void Update(double deltaTime);
+  void Update(const AIInput& worldState) const;
 
   /// Creates a ship for this faction
   ShipState *CreateShip();
 
 private:
+  uint32_t id_;
   std::string name_;
   Color color_;
 
