@@ -182,11 +182,11 @@ bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
 
     float r_ship = e1.collision_radius();
     float r_bullet = e2.collision_radius();
-    float r_diff = r_ship - r_bullet;
+    float r_total = r_ship + r_bullet;
 
     float a = v_diff.dot(v_diff);
     float b = 2 * v_diff.dot(p_diff);
-    float c = p_diff.dot(p_diff) - r_diff * r_diff;
+    float c = p_diff.dot(p_diff) - r_total * r_total;
 
     float d = b*b - (4 * a * c);
 
