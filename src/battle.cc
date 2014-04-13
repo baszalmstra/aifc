@@ -198,7 +198,7 @@ bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
 
     float a = v_diff.dot(v_diff);
     float b = 2 * v_diff.dot(p_diff);
-    float c = p_diff.dot(p_diff) - r_diff;
+    float c = p_diff.dot(p_diff) - r_diff * r_diff;
 
     float d = b*b - (4 * a * c);
 
