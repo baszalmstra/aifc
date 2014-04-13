@@ -1,6 +1,7 @@
 #include "ship_state.h"
 #include "faction_state.h"
 #include <SDL_opengl.h>
+#include <cmath>
 
 //-------------------------------------------------------------------------------------------------
 ShipState::ShipState(FactionState &faction, uint32_t id) :
