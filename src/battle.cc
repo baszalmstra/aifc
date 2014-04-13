@@ -141,6 +141,18 @@ void Battle::Draw()
 }
 
 //-------------------------------------------------------------------------------------------------
+void Battle::Fire(ShipState& ship)
+{
+  // Create bullet and set parameters, velocity still needs to be set!
+  Bullet* bullet = new Bullet(ship.faction());
+  bullet->set_position(ship.position());
+  bullet->set_orientation(ship.orientation());
+  // TODO: set velocity
+  
+  bullets_.emplace_back(bullet);
+}
+
+//-------------------------------------------------------------------------------------------------
 bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
     Vec2f v_diff = e1.velocity() - e2.velocity();
     Vec2f p_diff = e1.position() - e2.position();

@@ -43,6 +43,8 @@ public:
   
   /// Returns the mass of the ship
   float mass() const { return mass_; }
+  
+  const FactionState& faction() { return faction_; }
 
 public:
   /// Draws the ship

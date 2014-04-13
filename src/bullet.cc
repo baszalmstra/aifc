@@ -3,7 +3,7 @@
 #include <SDL_opengl.h>
 #include <cmath>
 
-Bullet::Bullet(FactionState & faction) :
+Bullet::Bullet(const FactionState & faction) :
   faction_(faction),
   energy_(0.0f)
 {
