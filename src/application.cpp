@@ -120,7 +120,7 @@ bool Application::Initialize()
 
   // Create an opengl context
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4); // Disable if performance gets crappy
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8); // Disable if performance gets crappy
 
   // Create a window and a renderer
   if ((window_ = SDL_CreateWindow("aifc", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|SDL_WINDOW_ALLOW_HIGHDPI)) == nullptr)
