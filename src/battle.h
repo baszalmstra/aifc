@@ -33,6 +33,8 @@ public:
 private:
   std::vector<std::unique_ptr<FactionState> > factions_;
   std::vector<std::unique_ptr<Bullet> > bullets_;
+  double battleTime_;
 
-  bool TestCollision(const ShipState& ship, const ShipState& bullet) const;
+  bool TestCollision(const ShipState& ship, const Bullet& bullet, float dt) const;
+
 };

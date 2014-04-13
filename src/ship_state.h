@@ -62,6 +62,9 @@ public:
   /// Returns the angular velocity
   float angular_velocity() const { return angularVelocity_; }
 
+  /// Returns the collision radius of the ship
+  float collision_radius() const { return 0.5f; }
+
 public:
   /// Draws the ship
   void Draw();
