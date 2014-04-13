@@ -30,6 +30,8 @@ SET(Internal_Source
   "src/bullet.cc"
   "src/bullet.h"
   "src/color.h"
+  "src/entity.cc"
+  "src/entity.h"
   "src/faction_state.cpp"
   "src/faction_state.h"
   "src/main.cpp"

@@ -1,11 +1,23 @@
 #include "bullet.h"
+<<<<<<< HEAD
+#include "faction_state.h"
+=======
 #include <SDL_opengl.h>
 #include <cmath>
 #include "float2.h"
+>>>>>>> ad73802dbecd61738653134e6059d0b922a5e6ee
 
-void Bullet::Update()
+Bullet::Bullet(FactionState & faction) :
+  faction_(faction),
+  energy_(0.0f)
 {
   
+  
+}
+
+
+void Bullet::Update(float deltaTime)
+{
   
   
 }

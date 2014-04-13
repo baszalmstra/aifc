@@ -80,7 +80,7 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
     for (uint32_t i = 0; i < numShips; ++i)
     {
       ShipState *ship = faction->CreateShip();
-      ship->set_position(Float2((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
+      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
                                 (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
     }
   }
@@ -119,7 +119,7 @@ void Battle::Update(float deltaTime)
   
   // Update all bullets
   for(auto &bullet : bullets_)
-    bullet->Update();
+    bullet->Update(deltaTime);
 }
 
 //-------------------------------------------------------------------------------------------------
