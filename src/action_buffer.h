@@ -2,7 +2,13 @@
 #include <cstdint>
 #include <vector>
 #include <assert.h>
-#include "ai_command.h"
+
+
+enum AIAction {
+	FORCE = 0x0,
+	TORQUE,
+	SHOOT
+};
 
 class ActionBuffer
 {
@@ -17,7 +23,7 @@ public:
 	void Resize(uint32_t newSize);
 
 	/// Begin the write event
-	void BeginWrite(AICommandAction action);
+	void BeginWrite(AIAction action);
 
 	/// End the write event
 	uint32_t EndWrite();
@@ -29,15 +35,18 @@ public:
 	* @brief Starts reading an event from the stream.
 	* @returns The id of the event
 	*/
-	uint16_t BeginReadEvent();
+	uint16_t BeginReadEvent() const;
 
 	/**
 	* @brief Ends reading the current event, skipping the read position to the next event.
 	*/
-	void EndReadEvent();
+	void EndReadEvent() const;
 
 	/// EOF of the stream
 	bool read_eof() const;
+
+	/// Reset read an write cursor to start of stream
+	void reset();
 
 
 	/** Writing in the stream **/
@@ -73,38 +82,38 @@ public:
 public:
 
 	/// Read a bool from the stream
-	const bool& ReadBool();
+	const bool& ReadBool() const;
 
 	/// Read a byte from the stream
-	const uint8_t& ReadByte();
+	const uint8_t& ReadByte() const;
 
 	/// Read a string from the stream
-	const std::string& ReadString();
+	const std::string& ReadString() const;
 	
 	/// Read a unsigned short from the stream
-	const uint16_t& ReadUShort();
+	const uint16_t& ReadUShort() const;
 
 	/// Read a short from the string
-	const int16_t& ReadShort();
+	const int16_t& ReadShort() const;
 
 	/// Read an usigned integer from the stream
-	const uint32_t& ReadUInt();
+	const uint32_t& ReadUInt() const;
 
 	/// Read an integer from the stream
-	const int32_t& ReadInt();
+	const int32_t& ReadInt() const;
 
 	/// Read a float from the stream
-	const float& ReadFloat();
+	const float& ReadFloat() const;
 
 	/// Read a double from the stream
-	const double& ReadDouble();
+	const double& ReadDouble() const;
 
 protected:
 	/// Write to the output stream
 	void Write(const uint8_t *bytes, uint32_t count);
 
 	template<typename ReadType>
-	const ReadType& Read()
+	const ReadType& Read() const
 	{                                                           
 		assert(readPosition_ + sizeof(ReadType) <= writePosition_);
 		const uint32_t pos = readPosition_;                       
@@ -113,11 +122,11 @@ protected:
 	}
 
 private:
-	uint32_t readPosition_;
+	mutable uint32_t readPosition_;
 	uint32_t writePosition_;
 
 	uint32_t currentWriteEventPosition_;
-	uint32_t nextReadEventPosition_;
+	mutable uint32_t nextReadEventPosition_;
 
 	std::vector<uint8_t> buffer_;
 };
@@ -127,4 +136,10 @@ private:
 inline bool ActionBuffer::read_eof() const
 {
 	return readPosition_ == writePosition_;
+}
+
+//-------------------------------------------------------------------------------------------------
+inline void ActionBuffer::reset()
+{
+	writePosition_ = readPosition_ = 0;
 }

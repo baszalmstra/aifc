@@ -37,7 +37,7 @@ void ActionBuffer::Resize(uint32_t newSize)
 }
 
 //-------------------------------------------------------------------------------------------------
-void ActionBuffer::BeginWrite(AICommandAction action)
+void ActionBuffer::BeginWrite(AIAction action)
 {
 	assert(currentWriteEventPosition_ == kInvalidPosition);
 
@@ -78,7 +78,7 @@ void ActionBuffer::SkipWrite(uint32_t count)
 }
 
 //-------------------------------------------------------------------------------------------------
-uint16_t ActionBuffer::BeginReadEvent()
+uint16_t ActionBuffer::BeginReadEvent() const
 {
 	assert(nextReadEventPosition_ == kInvalidPosition);
 
@@ -93,7 +93,7 @@ uint16_t ActionBuffer::BeginReadEvent()
 }
 
 //-------------------------------------------------------------------------------------------------
-void ActionBuffer::EndReadEvent()
+void ActionBuffer::EndReadEvent() const
 {
 	assert(nextReadEventPosition_ != kInvalidPosition);
 
@@ -158,55 +158,55 @@ void ActionBuffer::WriteDouble(double value)
 }
 
 //-------------------------------------------------------------------------------------------------
-const bool& ActionBuffer::ReadBool()
+const bool& ActionBuffer::ReadBool() const
 {
 	return Read<bool>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const uint8_t& ActionBuffer::ReadByte()
+const uint8_t& ActionBuffer::ReadByte() const
 {
 	return Read<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const std::string& ActionBuffer::ReadString()
+const std::string& ActionBuffer::ReadString() const
 {
 	return Read<std::string>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const uint16_t& ActionBuffer::ReadUShort()
+const uint16_t& ActionBuffer::ReadUShort() const
 {
 	return Read<uint16_t>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const int16_t& ActionBuffer::ReadShort()
+const int16_t& ActionBuffer::ReadShort() const
 {
 	return Read<int16_t>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const uint32_t& ActionBuffer::ReadUInt()
+const uint32_t& ActionBuffer::ReadUInt() const
 {
 	return Read<uint32_t>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const int32_t& ActionBuffer::ReadInt()
+const int32_t& ActionBuffer::ReadInt() const
 {
 	return Read<int32_t>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const float& ActionBuffer::ReadFloat()
+const float& ActionBuffer::ReadFloat() const
 {
 	return Read<float>();
 }
 
 //-------------------------------------------------------------------------------------------------
-const double& ActionBuffer::ReadDouble()
+const double& ActionBuffer::ReadDouble() const
 {
 	return Read<double>();
 }

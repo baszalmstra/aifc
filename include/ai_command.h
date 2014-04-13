@@ -3,13 +3,8 @@
 #include <vector>
 #include <cstdint>
 
-typedef uint32_t ShipId;
 
-enum AICommandAction {
-	FORCE = 0x0, 
-	TORQUE, 
-	SHOOT
-};
+typedef uint32_t ShipId;
 
 class AICommand {
 

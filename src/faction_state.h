@@ -3,11 +3,13 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include "action_buffer.h"
 #include "color.h"
 
 class ShipState;
 class IAI;
 class AIInput;
+class ActionBuffer;
 
 class FactionState
 {
@@ -32,6 +34,9 @@ public:
 
   /// Creates a ship for this faction
   ShipState *CreateShip();
+
+private:
+	void ProcessAction(AIAction action, const ActionBuffer& commandBuffer);
 
 private:
   uint32_t id_;

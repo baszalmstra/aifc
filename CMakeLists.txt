@@ -25,6 +25,8 @@ FIND_PACKAGE(SDL2_image REQUIRED)
 SET(Internal_Source   
   "src/application.cpp"
   "src/application.h"
+  "src/action_buffer.h"
+  "src/action_buffer.cc"
   "src/battle.h"
   "src/battle.cc"
   "src/bullet.cc"
@@ -32,15 +34,15 @@ SET(Internal_Source
   "src/color.h"
   "src/entity.cc"
   "src/entity.h"
+  "src/faction_ai_command.h"
+  "src/faction_ai_command.cc"
   "src/faction_state.cpp"
   "src/faction_state.h"
   "src/main.cpp"
   "src/plugin_wrapper.cpp"
   "src/plugin_wrapper.h"
   "src/ship_state.cpp"
-  "src/ship_state.h"
-  "src/action_buffer.h"
-  "src/action_buffer.cc")
+  "src/ship_state.h")
 
 
 SET(Public_Source
