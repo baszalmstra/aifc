@@ -7,7 +7,7 @@ class FactionState;
 class Bullet : public Entity
 {
 public:
-  Bullet(FactionState &faction);
+  Bullet(const FactionState& faction);
   
 public:
   /// Returns the bullet's energy
@@ -19,9 +19,7 @@ public:
   /// Draws the bullet
   void Draw();
 
-  float collision_radius() const;
-
 private:
-  FactionState &faction_;
+  const FactionState& faction_;
   const float energy_;
 };
