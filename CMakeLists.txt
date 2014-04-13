@@ -38,7 +38,9 @@ SET(Internal_Source
   "src/plugin_wrapper.cpp"
   "src/plugin_wrapper.h"
   "src/ship_state.cpp"
-  "src/ship_state.h")
+  "src/ship_state.h"
+  "src/action_buffer.h"
+  "src/action_buffer.cc")
 
 
 SET(Public_Source
@@ -46,7 +48,6 @@ SET(Public_Source
   "include/ai_command.h"
   "include/ai_input.h"
   "include/ship_info.h"
-  "include/float2.h"
   "include/ai/i_ai.h"
   "include/ai/i_ai_plugin.h"
 )
