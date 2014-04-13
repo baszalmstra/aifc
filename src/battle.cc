@@ -142,8 +142,8 @@ void Battle::Draw()
 
 //-------------------------------------------------------------------------------------------------
 bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
-    Float2 v_diff = e1.velocity() - e2.velocity();
-    Float2 p_diff = e1.position() - e2.position();
+    Vec2f v_diff = e1.velocity() - e2.velocity();
+    Vec2f p_diff = e1.position() - e2.position();
 
     float r_ship = e1.collision_radius();
     float r_bullet = e2.collision_radius();
