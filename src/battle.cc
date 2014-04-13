@@ -7,6 +7,8 @@
 #include "ai_input.h"
 #include <cstdlib>
 #include <iostream>
+#include <SDL_opengl.h>
+#include <cmath>
 
 //-------------------------------------------------------------------------------------------------
 namespace {
@@ -38,7 +40,8 @@ namespace {
 }
 
 //-------------------------------------------------------------------------------------------------
-Battle::Battle()
+Battle::Battle() :
+  battleTime_(0.0f)
 {
 
 }
@@ -84,6 +87,8 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 //-------------------------------------------------------------------------------------------------
 void Battle::Update(float deltaTime)
 {
+  battleTime_ += deltaTime;
+
   std::vector<ShipInfo> shipInfos;
   std::vector<uint16_t> factionOffsets;
 
@@ -114,6 +119,28 @@ void Battle::Update(float deltaTime)
 //-------------------------------------------------------------------------------------------------
 void Battle::Draw()
 {
+  Float2 pos(0.0f, std::fmod((float)battleTime_*100, 50.0f));
+
+  // Draw all bullets
+  float orientation_ = 0;
+  float dirY = std::cos(orientation_);
+  float dirX = std::sin(orientation_);
+  const float width = 0.2f;
+  const float height = 1.8f;
+
+  const float halfWidth = width*0.5f;
+  glBegin(GL_TRIANGLES);
+    glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+    glVertex3f(height*0.2f * -dirX + pos.x, height*0.2f * dirY + pos.y, 0.0f);
+    glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
+    glVertex3f(halfWidth*dirY + pos.x, halfWidth*dirX + pos.y, 0.0f);
+    glVertex3f(halfWidth*dirY + pos.x, halfWidth*dirX + pos.y, 0.0f);
+    glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
+    glColor4f(0.0f, 0.1f, 0.0f, 0.3f);
+    glVertex3f(-height*0.8f*-dirX + pos.x, -height*0.8f*dirY + pos.y, 0.0f);
+  glEnd();
+
+  // Draw all ships
   for (auto &faction : factions_)
     for (auto &ship : faction->ships())
       ship->Draw();

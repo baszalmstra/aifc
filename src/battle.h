@@ -30,4 +30,5 @@ public:
 
 private:
   std::vector<std::unique_ptr<FactionState>> factions_;
+  double battleTime_;
 };
