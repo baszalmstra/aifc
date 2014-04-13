@@ -57,9 +57,6 @@ public:
 	/// Write a byte to the output stream
 	void WriteByte(uint8_t value);
 
-	/// Write a string to the output stream
-	void WriteString(const std::string& value);
-
 	/// Write an unsigned short to the output stream
 	void WriteUShort(uint16_t value);
 
@@ -86,9 +83,6 @@ public:
 
 	/// Read a byte from the stream
 	const uint8_t& ReadByte() const;
-
-	/// Read a string from the stream
-	const std::string& ReadString() const;
 	
 	/// Read a unsigned short from the stream
 	const uint16_t& ReadUShort() const;

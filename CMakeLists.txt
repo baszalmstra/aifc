@@ -66,7 +66,7 @@ SOURCE_GROUP("public"     FILES ${Public_Source})
 #--------------------------------------------------------------------------------------------------
 # Setup project
 #--------------------------------------------------------------------------------------------------
-ADD_EXECUTABLE(aifc
+ADD_EXECUTABLE(aifc MACOSX_BUNDLE WIN32
   ${Internal_Source}
   ${Public_Source})
 

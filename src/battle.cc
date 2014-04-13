@@ -58,7 +58,7 @@ Battle::~Battle()
 //-------------------------------------------------------------------------------------------------
 void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 {
-  const uint32_t numAIs = 2;
+  const uint32_t numAIs = 4;
   const uint32_t numShips = 10;
 
   // Initialize random ais

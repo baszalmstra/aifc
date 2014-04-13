@@ -36,7 +36,7 @@ public:
   size_t num_factions() const { return factions_.size(); }
 
   /// Returns true if a certain position is in bounds
-  bool in_bounds(const Vec2f &pos) const { return pos.x >= -bounds_.x && pos.y <= bounds_.x && pos.y >= -bounds_.y && pos.y <= bounds_.y; }
+  bool in_bounds(const Vec2f &pos) const { return pos.x >= -bounds_.x && pos.x <= bounds_.x && pos.y >= -bounds_.y && pos.y <= bounds_.y; }
 
 private:
   bool TestCollision(const Entity& e1, const Entity& e2, float dt) const;

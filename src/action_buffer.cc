@@ -5,7 +5,7 @@ const uint32_t kInvalidPosition = ~(uint32_t) 0;
 
 //-------------------------------------------------------------------------------------------------
 ActionBuffer::ActionBuffer(uint32_t initialSizeBytes) 
-: writePosition_(0), readPosition_(0), 
+: readPosition_(0), writePosition_(0),
 currentWriteEventPosition_(kInvalidPosition),
 nextReadEventPosition_(kInvalidPosition)
 {
@@ -116,12 +116,6 @@ void ActionBuffer::WriteByte(uint8_t value)
 }
 
 //-------------------------------------------------------------------------------------------------
-void ActionBuffer::WriteString(const std::string& value)
-{
-	Write(reinterpret_cast<const uint8_t*>(&value), sizeof(uint8_t));
-}
-
-//-------------------------------------------------------------------------------------------------
 void ActionBuffer::WriteUShort(uint16_t value)
 {
 	Write(reinterpret_cast<const uint8_t*>(&value), sizeof(uint16_t));
@@ -167,12 +161,6 @@ const bool& ActionBuffer::ReadBool() const
 const uint8_t& ActionBuffer::ReadByte() const
 {
 	return Read<uint8_t>();
-}
-
-//-------------------------------------------------------------------------------------------------
-const std::string& ActionBuffer::ReadString() const
-{
-	return Read<std::string>();
 }
 
 //-------------------------------------------------------------------------------------------------

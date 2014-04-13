@@ -101,7 +101,7 @@ void Application::Draw()
 
   // Determine aspect ratio
   float aspectRatio = (float) vpWidth / vpHeight;
-  const float viewportSize = 50.0f;
+  const float viewportSize = 100.0f;
   const float halfViewportSize = viewportSize * 0.5f;
 
   // Setup view matrix
