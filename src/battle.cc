@@ -6,6 +6,7 @@
 #include "ship_info.h"
 #include "ai_input.h"
 #include "bullet.h"
+#include "entity.h"
 #include <cstdlib>
 #include <iostream>
 #include <SDL_opengl.h>
@@ -140,12 +141,12 @@ void Battle::Draw()
 }
 
 //-------------------------------------------------------------------------------------------------
-bool Battle::TestCollision(const ShipState& ship, const Bullet& bullet, float dt) const {
-    Float2 v_diff = ship.velocity() - bullet.velocity();
-    Float2 p_diff = ship.position() - bullet.position();
+bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
+    Float2 v_diff = e1.velocity() - e2.velocity();
+    Float2 p_diff = e1.position() - e2.position();
 
-    float r_ship = ship.collision_radius();
-    float r_bullet = bullet.collision_radius();
+    float r_ship = e1.collision_radius();
+    float r_bullet = e2.collision_radius();
     float r_diff = r_ship - r_bullet;
 
     float a = v_diff.dot(v_diff);

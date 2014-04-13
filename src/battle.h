@@ -6,7 +6,7 @@
 
 class IAIPlugin;
 class FactionState;
-class ShipState;
+class Entity;
 class Bullet;
 
 class Battle final
@@ -35,6 +35,6 @@ private:
   std::vector<std::unique_ptr<Bullet> > bullets_;
   double battleTime_;
 
-  bool TestCollision(const ShipState& ship, const Bullet& bullet, float dt) const;
+  bool TestCollision(const Entity& e1, const Entity& e2, float dt) const;
 
 };
