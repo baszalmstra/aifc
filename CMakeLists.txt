@@ -48,7 +48,6 @@ SET(Public_Source
   "include/ai_command.h"
   "include/ai_input.h"
   "include/ship_info.h"
-  "include/float2.h"
   "include/ai/i_ai.h"
   "include/ai/i_ai_plugin.h"
 )
