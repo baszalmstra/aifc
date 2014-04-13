@@ -27,6 +27,8 @@ SET(Internal_Source
   "src/application.h"
   "src/battle.h"
   "src/battle.cc"
+  "src/bullet.cc"
+  "src/bullet.h"
   "src/color.h"
   "src/faction_state.cpp"
   "src/faction_state.h"

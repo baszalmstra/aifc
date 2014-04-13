@@ -69,8 +69,6 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
     factions_.emplace_back(new FactionState(i, ai->name(), Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f), ai->CreateAI(i)));
   }
 
-
-
   // Create a few ships per faction
   for (auto &faction : factions_)
   { 
