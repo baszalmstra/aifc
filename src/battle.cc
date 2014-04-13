@@ -113,7 +113,7 @@ void Battle::Update(float deltaTime)
   
   // Update all bullets
   for(auto &bullet : bullets_)
-    bullet->Update();
+    bullet->Update(deltaTime);
 }
 
 //-------------------------------------------------------------------------------------------------

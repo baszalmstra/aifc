@@ -1,13 +1,25 @@
 #pragma once
-#
+#include "float2.h"
+
+class FactionState;
 
 class Bullet
 {
 public:
-  void Update();
+  Bullet(FactionState &faction);
+  
+public:
+  /// Returns the bullet's energy
+  const float energy() { return energy_; }
 
+public:
+  void Update(float deltaTime);
+
+  /// Draws the bullet
   void Draw();
 
 private:
+  FactionState &faction_;
+  const float energy_;
 
 };
