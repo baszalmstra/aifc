@@ -6,6 +6,7 @@
 
 class IAIPlugin;
 class FactionState;
+class ShipState;
 class Bullet;
 
 class Battle final
@@ -30,6 +31,8 @@ public:
   size_t num_factions() const { return factions_.size(); }
 
 private:
-  std::vector<std::unique_ptr<FactionState>> factions_;
-  std::vector<std::unique_ptr<Bullet>> bullets_;
+  std::vector<std::unique_ptr<FactionState> > factions_;
+  std::vector<std::unique_ptr<Bullet> > bullets_;
+
+  bool TestCollision(const ShipState& ship, const ShipState& bullet) const;
 };

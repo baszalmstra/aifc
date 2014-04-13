@@ -126,3 +126,28 @@ void Battle::Draw()
   for(auto &bullet : bullets_)
     bullet->Draw();
 }
+
+//-------------------------------------------------------------------------------------------------
+bool Battle::TestCollision(const ShipState& ship, const ShipState& bullet) const {
+    Float2 v_diff = ship.velocity() - bullet.velocity();
+    Float2 p_diff = ship.position() - ship.position();
+
+    float r_ship =
+    float r_bullet = 0;
+    float r_diff = r_ship - r_bullet;
+
+    float a = v_diff.dot(v_diff);
+    float b = 2 * v_diff.dot(p_diff);
+    float c = p_diff.dot(p_diff) - r_diff;
+
+    d = b*b - (4 * a * c);
+
+    if(d < 0.0f) return false;
+
+    t0 = (-b - sqrt(d)) / (2 * a);
+    t1 = (-b + sqrt(d)) / (2 * a);
+
+    if(t0 > t1) swap(t0, t1);
+
+    if (t0 > tmax || t1 < tmin) return false;
+}
