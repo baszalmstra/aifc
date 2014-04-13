@@ -29,7 +29,7 @@ ShipState *FactionState::CreateShip()
 }
 
 //---------------------------------------------------------------------------------------------------
-void FactionState::Update()
+void FactionState::Update(double deltaTime)
 {
   AIInput input;
   AICommand command;

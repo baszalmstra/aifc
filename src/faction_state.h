@@ -27,7 +27,7 @@ public:
   const std::vector<std::unique_ptr<ShipState>> &ships() const { return ships_; }
 
   /// Updates the AI of the faction
-  void Update();
+  void Update(double deltaTime);
 
   /// Creates a ship for this faction
   ShipState *CreateShip();

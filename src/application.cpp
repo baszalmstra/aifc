@@ -70,7 +70,11 @@ bool Application::HandleEvent(const SDL_Event& evt)
 //---------------------------------------------------------------------------------------------------
 void Application::Update()
 {
-  battle_->Update();
+  std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> timeSinceLastFrame = now - lastTime_;
+  lastTime_ = now;
+  
+  battle_->Update(timeSinceLastFrame.count());
 }
 
 //---------------------------------------------------------------------------------------------------

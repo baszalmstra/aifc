@@ -48,7 +48,7 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 
   // Create a few ships per faction
   for (auto &faction : factions_)
-  {
+  { 
     for (uint32_t i = 0; i < numShips; ++i)
     {
       ShipState *ship = faction->CreateShip();
@@ -59,10 +59,10 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 }
 
 //-------------------------------------------------------------------------------------------------
-void Battle::Update()
+void Battle::Update(double deltaTime)
 {
   for (auto &faction : factions_)
-    faction->Update();
+    faction->Update(deltaTime);
 }
 
 //-------------------------------------------------------------------------------------------------

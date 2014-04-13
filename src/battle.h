@@ -20,7 +20,7 @@ public:
   void Initialize(const std::vector<IAIPlugin*> &ais);
 
   // Updates the battle
-  void Update();
+  void Update(double deltaTime);
 
   // Draws the battle
   void Draw();

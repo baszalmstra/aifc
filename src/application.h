@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <chrono>
 
 struct SDL_Window;
 union SDL_Event;
@@ -47,4 +48,6 @@ private:
 
   std::vector<std::unique_ptr<PluginWrapper>> plugins_;
   std::unique_ptr<Battle> battle_;  
+
+  std::chrono::time_point<std::chrono::high_resolution_clock> lastTime_;
 };

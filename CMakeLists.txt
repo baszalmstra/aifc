@@ -42,8 +42,6 @@ SET(Include
   "include/ai_input.h"
   "include/ship_info.h"
   "include/float2.h"
-  "include/ship_description.h"
-  "include/thruster_description.h"
   "include/ai/i_ai.h"
   "include/ai/i_ai_plugin.h"
 )

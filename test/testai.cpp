@@ -21,10 +21,5 @@ void TestAI::Update(const AIInput& input, AICommand& command)
     {
         // I do! Get a random one (first one in the list)
         const ShipInfo& ship_info = my_ships.front();
-
-        // If it has any thrusters (I sure hope so!), set it to ramming speed!
-        if (!ship_info.description().thrusters().empty()) {
-            command.set_thruster(ship_info.id(), 0, 1.0f);
-        }
     }
 }
