@@ -21,7 +21,8 @@ FIND_PACKAGE(SDL2_image REQUIRED)
 #--------------------------------------------------------------------------------------------------
 # Setup source files
 #--------------------------------------------------------------------------------------------------
-SET(Source
+
+SET(Internal_Source   
   "src/application.cpp"
   "src/application.h"
   "src/battle.h"
@@ -33,10 +34,10 @@ SET(Source
   "src/plugin_wrapper.cpp"
   "src/plugin_wrapper.h"
   "src/ship_state.cpp"
-  "src/ship_state.h"
-)
+  "src/ship_state.h")
 
-SET(Include
+
+SET(Public_Source
   "include/math_types.h"
   "include/ai_command.h"
   "include/ai_input.h"
@@ -51,12 +52,16 @@ INCLUDE_DIRECTORIES(
   ${SDL2_INCLUDE_DIR}
   ${SDL2_IMAGE_INCLUDE_DIRS})
 
+SOURCE_GROUP("internal"   FILES ${Internal_Source})
+SOURCE_GROUP("public"     FILES ${Public_Source})
+
+
 #--------------------------------------------------------------------------------------------------
 # Setup project
 #--------------------------------------------------------------------------------------------------
 ADD_EXECUTABLE(aifc
-  ${Source}
-  ${Include})
+  ${Internal_Source}
+  ${Public_Source})
 
 #--------------------------------------------------------------------------------------------------
 # Setup project dependencies
