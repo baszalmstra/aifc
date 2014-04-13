@@ -118,7 +118,7 @@ void Battle::Update(float deltaTime)
   
   // Update all bullets
   for(auto &bullet : bullets_)
-    bullet->Update();
+    bullet->Update(deltaTime);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -134,4 +134,31 @@ void Battle::Draw()
   for (auto &faction : factions_)
     for (auto &ship : faction->ships())
       ship->Draw();
+  
+  for(auto &bullet : bullets_)
+    bullet->Draw();
 }
+
+//-------------------------------------------------------------------------------------------------
+bool Battle::TestCollision(const ShipState& ship, const Bullet& bullet, float dt) const {
+    Float2 v_diff = ship.velocity() - bullet.velocity();
+    Float2 p_diff = ship.position() - bullet.position();
+
+    float r_ship = ship.collision_radius();
+    float r_bullet = bullet.collision_radius();
+    float r_diff = r_ship - r_bullet;
+
+    float a = v_diff.dot(v_diff);
+    float b = 2 * v_diff.dot(p_diff);
+    float c = p_diff.dot(p_diff) - r_diff;
+
+    float d = b*b - (4 * a * c);
+
+    if (d < 0.0f) return false;
+
+    float t0 = (-b - sqrt(d)) / (2 * a);
+    float t1 = (-b + sqrt(d)) / (2 * a);
+
+    return (t0 > 0 && t0 < dt) || (t1 > 0 && t1 < dt);
+}
+

@@ -8,7 +8,7 @@ class IAIPlugin
 {
 public:
   // Default destructor
-  virtual ~IAIPlugin() {};
+  virtual ~IAIPlugin() {}
 
   // Creates an AI to play against another AI in a single epic match
   virtual std::unique_ptr<IAI> CreateAI(uint32_t id) const = 0;
