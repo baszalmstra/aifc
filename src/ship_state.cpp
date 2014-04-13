@@ -6,10 +6,12 @@
 ShipState::ShipState(FactionState &faction, uint32_t id) :
   id_(id),
   faction_(faction),
-  position_(0.0f, 0.0f),
-  orientation_(0.0f),
+  position_(0.0f, 0.0f), velocity_(0.0f, 0.0f),
+  orientation_(0.0f), angularVelocity_(0.0f),
   maxHp_(100),
-  hp_(maxHp_)
+  hp_(maxHp_),
+  force_(8.0f), torque_(1.0f),
+  mass_(1.0f)
 {
 
 }
@@ -38,4 +40,24 @@ void ShipState::Draw()
   glEnd();
 
   glPopMatrix();
+}
+
+//-------------------------------------------------------------------------------------------------
+void ShipState::Update(float deltaTime)
+{
+  // Calculate the angular acceleration
+  float angularAcceleration = torque_ / mass_;
+  angularVelocity_ += angularAcceleration * deltaTime;
+  orientation_ += angularVelocity_ * deltaTime;
+
+  // Calculate the direction of force
+  Float2 directionOfForce(-std::sin(orientation_), std::cos(orientation_));
+  
+  // Calculate the acceleration
+  float acceleration = force_ / mass_;
+  velocity_ += directionOfForce * acceleration * static_cast<float>(deltaTime);
+
+  // Update the velocity
+  position_ += velocity_ * deltaTime;
+  
 }

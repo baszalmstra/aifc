@@ -6,20 +6,35 @@
 #include "ship_info.h"
 #include "ai_input.h"
 #include <cstdlib>
+#include <iostream>
 
 //-------------------------------------------------------------------------------------------------
 namespace {
 
   Color randomColors [] = {
-    Color(255, 0, 0),
-    Color(0, 255, 0),
-    Color(0, 0, 255),
-    Color(255, 255, 0),
-    Color(255, 0, 255),
-    Color(0, 255, 255),
+    Color(0, 192, 129),
+    Color(42, 129, 101),
+    Color(0, 104, 70),
+    Color(64, 227, 174),
+    Color(115, 227, 191),
+    Color(83, 8, 195),
+    Color(81, 47, 131),
+    Color(43, 2, 105),
+    Color(135, 71, 229),
+    Color(164, 120, 229),
+    Color(255, 229, 0),
+    Color(171, 160, 56),
+    Color(138, 124, 0),
+    Color(255, 236, 72),
+    Color(255, 242, 129),
+    Color(255, 86, 0),
+    Color(171, 95, 56),
+    Color(138, 46, 0),
+    Color(255, 133, 72),
+    Color(255, 171, 129),
   };
 
-  uint32_t randomColorCount = sizeof(randomColors) / sizeof(Color);
+  uint32_t randomColorCount = sizeof(randomColors) / sizeof(Color) / 4;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -41,12 +56,20 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
   const uint32_t numShips = 3;
 
   // Initialize random ais
+  uint32_t randOffset = rand() % 4;
   for (uint32_t i = 0; i < numAIs; ++i)
   {
     uint32_t rndIdx = rand();
     IAIPlugin* ai = ais[rndIdx % ais.size()];
-    factions_.emplace_back(new FactionState(i, ai->name(), randomColors[rndIdx % randomColorCount], ai->CreateAI(i)));
+
+    // Sample a random unique color
+    Color color = randomColors[rand() % randomColorCount + randomColorCount * ((randOffset + i) % 4)];
+
+    // Insert the faction
+    factions_.emplace_back(new FactionState(i, ai->name(), Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f), ai->CreateAI(i)));
   }
+
+
 
   // Create a few ships per faction
   for (auto &faction : factions_)
@@ -61,7 +84,7 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 }
 
 //-------------------------------------------------------------------------------------------------
-void Battle::Update(double deltaTime)
+void Battle::Update(float deltaTime)
 {
   std::vector<ShipInfo> shipInfos;
   std::vector<uint16_t> factionOffsets;
@@ -76,7 +99,8 @@ void Battle::Update(double deltaTime)
       shipInfos.emplace_back(
       i, ship->id(),
       ship->hp(), ship->max_hp(),
-      ship->position(), ship->orientation());
+      ship->position(), ship->orientation(),
+      ship->mass(), ship->velocity(), ship->angular_velocity());
   }
 
   // Create the input buffer

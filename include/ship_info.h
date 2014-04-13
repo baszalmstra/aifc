@@ -10,13 +10,15 @@ class ShipInfo
 {
 public:
   /// Default constructor
-  ShipInfo(uint32_t factionId, ShipId id, uint32_t hp, uint32_t maxHp, const Float2 &pos, float orientation) :
+  ShipInfo(uint32_t factionId, ShipId id, uint32_t hp, uint32_t maxHp, const Float2 &pos, float orientation,
+    float mass, const Float2& velocity, float angularVelocity) :
     factionId_(factionId),
     id_(id),
     hp_(hp),
     maxHp_(maxHp),
-    pos_(pos),
-    orientation_(orientation) {}
+    pos_(pos), velocity_(velocity),
+    orientation_(orientation), angularVelocity_(angularVelocity),
+    mass_(mass) {}
 
   /// Default destructor
   virtual ~ShipInfo() {};
@@ -39,10 +41,20 @@ public:
   /// Returns the id of the faction to which this ship belongs
   uint32_t faction_id() const { return factionId_; } 
 
+  /// Returns the mass of the ship
+  float mass() const { return mass_; }
+
+  /// Returns the velocity of the ship
+  const Float2& velocity() const { return velocity_; }
+
+  /// Returns the angular velocity off the ship
+  float angular_velocity() const { return angularVelocity_; }
+
 private:
   uint32_t factionId_;
   ShipId id_;
   uint32_t hp_, maxHp_;
-  Float2 pos_;
-  float orientation_;
+  Float2 pos_, velocity_;
+  float orientation_, angularVelocity_;
+  float mass_;
 };

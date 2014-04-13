@@ -9,6 +9,10 @@ public:
   operator float*() { return elems; }
   operator float const*() const { return elems; }
 
+  /// Comparing
+  bool operator==(const Color& color) const { return r == color.r && g == color.g && b == color.b && a == color.a; }
+  bool operator!=(const Color& color) const { return r != color.r || g != color.g || b != color.b || a != color.a; }
+
 public:
   union
   {

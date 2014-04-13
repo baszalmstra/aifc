@@ -41,14 +41,40 @@ public:
   /// Returns the id of the ship
   uint32_t id() const { return id_; }
 
+  /// Sets the force on the ship
+  void set_force(float force) { force_ = force; }
+
+  /// Returns the current force on the ship
+  float force() const { return force_; }
+
+  /// Sets the torque on the ship
+  void set_torque(float torque) { torque_ = torque; }
+
+  //// Returns the torque on the ship
+  float torque() const { return torque_; }
+  
+  /// Returns the mass of the ship
+  float mass() const { return mass_; }
+
+  /// Returns the velocity of the ship
+  const Float2& velocity() const { return velocity_; }
+
+  /// Returns the angular velocity
+  float angular_velocity() const { return angularVelocity_; }
+
 public:
   /// Draws the ship
   void Draw();
 
+  /// Updates the ship based on its torque and linear force
+  void Update(float deltaTime);
+
 private:
   uint32_t id_;
   FactionState &faction_;
-  Float2 position_;
-  float orientation_;
+  Float2 position_, velocity_;
+  float orientation_, angularVelocity_;
   uint16_t maxHp_, hp_;
+  float force_, torque_;
+  float mass_;
 };

@@ -11,7 +11,7 @@ class AIInput
 {
 
 public:
-  AIInput(double deltaTime, std::vector<ShipInfo>&& info, std::vector<uint16_t> factionOffsets) :
+  AIInput(float deltaTime, std::vector<ShipInfo>&& info, std::vector<uint16_t> factionOffsets) :
     deltaTime_(deltaTime),
     shipInfo_(std::forward<std::vector<ShipInfo>>(info)),
     shipOffsets_(std::forward<std::vector<uint16_t>>(factionOffsets)) {};
@@ -25,10 +25,10 @@ public:
   const ShipInfo& shipInfo(ShipId id) const { return shipInfo_[id]; }
 
   /// Returns the delta time of the frame
-  double delta_time() const { return deltaTime_; }
+  float delta_time() const { return deltaTime_; }
 
 private:
-  double deltaTime_;
+  float deltaTime_;
   std::vector<ShipInfo> shipInfo_;
   std::vector<uint16_t> shipOffsets_;
 };
