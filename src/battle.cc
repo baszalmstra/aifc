@@ -6,6 +6,7 @@
 #include "ship_info.h"
 #include "ai_input.h"
 #include "bullet.h"
+#include "entity.h"
 #include <cstdlib>
 #include <iostream>
 #include <SDL_opengl.h>
@@ -73,16 +74,27 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
     factions_.emplace_back(new FactionState(i, ai->name(), Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f), ai->CreateAI(i)));
   }
 
-  // Create a few ships per faction
-  for (auto &faction : factions_)
-  { 
-    for (uint32_t i = 0; i < numShips; ++i)
-    {
-      ShipState *ship = faction->CreateShip();
-      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
-                                (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
-    }
-  }
+//  // Create a few ships per faction
+//  for (auto &faction : factions_)
+//  {
+//    for (uint32_t i = 0; i < numShips; ++i)
+//    {
+//      ShipState *ship = faction->CreateShip();
+//      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 40.0f- 20.0f,
+//                                (float)rand() / (float)RAND_MAX * 40.0f - 20.0f));
+//    }
+//  }
+
+  ShipState* ship0 = factions_[0]->CreateShip();
+  ship0->set_position(Vec2f(-5, 0));
+  ship0->set_orientation(-1);
+  ship0->set_force(1);
+
+  ShipState* ship1 = factions_[1]->CreateShip();
+  ship1->set_position(Vec2f(5, 0));
+  ship1->set_orientation(1);
+  ship1->set_force(1);
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -115,10 +127,34 @@ void Battle::Update(float deltaTime)
   // Let the faction update based on the state of the world
   for (auto &faction : factions_)
     faction->Update(input);
+
+  // Check collisions
+  for (auto &faction1 : factions_) {
+      for (auto &ship1 : faction1->ships()) {
+          for (auto &faction2 : factions_) {
+              for (auto &ship2 : faction2->ships()) {
+                  if (ship1 != ship2 && TestCollision(*ship1, *ship2, deltaTime)) {
+                      std::cout << "Collision!" << std::endl;
+                  }
+              }
+          }
+
+          for(auto &bullet : bullets_) {
+              if (TestCollision(*ship1, *bullet, deltaTime)) {
+                  std::cout << "Bullet collision!" << std::endl;
+              }
+          }
+
+      }
+  }
+
+
   
   // Update all bullets
   for(auto &bullet : bullets_)
     bullet->Update(deltaTime);
+
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -140,12 +176,12 @@ void Battle::Draw()
 }
 
 //-------------------------------------------------------------------------------------------------
-bool Battle::TestCollision(const ShipState& ship, const Bullet& bullet, float dt) const {
-    Float2 v_diff = ship.velocity() - bullet.velocity();
-    Float2 p_diff = ship.position() - bullet.position();
+bool Battle::TestCollision(const Entity& e1, const Entity& e2, float dt) const {
+    Vec2f v_diff = e1.velocity() - e2.velocity();
+    Vec2f p_diff = e1.position() - e2.position();
 
-    float r_ship = ship.collision_radius();
-    float r_bullet = bullet.collision_radius();
+    float r_ship = e1.collision_radius();
+    float r_bullet = e2.collision_radius();
     float r_diff = r_ship - r_bullet;
 
     float a = v_diff.dot(v_diff);

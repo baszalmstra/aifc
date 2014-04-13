@@ -22,7 +22,7 @@ void Bullet::Update(float deltaTime)
 //---------------------------------------------------------------------------------------------------
 void Bullet::Draw()
 {
-  Float2 pos(0.0f, std::fmod((float) 0.0f * 100, 50.0f));
+  Vec2f pos(0.0f, std::fmod((float) 0.0f * 100, 50.0f));
 
   // Draw all bullets
   float orientation_ = 0;
