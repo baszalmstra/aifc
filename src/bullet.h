@@ -23,5 +23,4 @@ public:
 private:
   FactionState &faction_;
   const float energy_;
-
 };
