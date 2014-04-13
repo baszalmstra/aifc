@@ -5,6 +5,7 @@
 #include "ship_state.h"
 #include "ship_info.h"
 #include "ai_input.h"
+#include "bullet.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -109,6 +110,10 @@ void Battle::Update(float deltaTime)
   // Let the faction update based on the state of the world
   for (auto &faction : factions_)
     faction->Update(input);
+  
+  // Update all bullets
+  for(auto &bullet : bullets_)
+    bullet->Update();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -117,4 +122,7 @@ void Battle::Draw()
   for (auto &faction : factions_)
     for (auto &ship : faction->ships())
       ship->Draw();
+  
+  for(auto &bullet : bullets_)
+    bullet->Draw();
 }
