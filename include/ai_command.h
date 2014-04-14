@@ -3,15 +3,20 @@
 #include <vector>
 #include <cstdint>
 
-
 typedef uint32_t ShipId;
 
 class AICommand {
 
 public:
-  /// Default constructor
-  AICommand() {};
-
   /// Default destructor
-  virtual ~AICommand(){};
+  virtual ~AICommand() {};
+
+  /// Set the velocity of the ship with the given id
+  virtual void SetShipForce(uint32_t shipId, float force) = 0;
+
+  /// Set the angular force of the ship with the given id
+  virtual void SetShipTorque(uint32_t shipId, float force) = 0;
+
+  /// Tells the specified ship to fire
+  virtual void Fire(uint32_t shipId) = 0;
 };

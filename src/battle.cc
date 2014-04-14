@@ -85,9 +85,6 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
       ShipState *ship = CreateShip(*faction);
       ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 100.0f- 50.0f,
                                 (float)rand() / (float)RAND_MAX * 100.0f - 50.0f));
-      ship->set_torque(0.1f);
-      ship->set_force(1.0f);
-      ship->set_orientation(rand() / 1000.0f);
     }
   }
 
@@ -108,22 +105,10 @@ void Battle::Update(float deltaTime)
 {
   battleTime_ += deltaTime;
 
-  std::vector<ShipInfo> shipInfos;
-  std::vector<uint16_t> factionOffsets;
-
-  // Gather info on all ships
-  for (auto &ship : *ships_)
-    shipInfos.emplace_back(
-      ship.faction().id(), ship.id(),
-      ship.hp(), ship.max_hp(),
-      ship.position(), ship.orientation(),
-      ship.mass(), ship.velocity(), ship.angular_velocity());
-
-  // Create the input buffer
-  AIInput input(deltaTime, 
-    std::move(shipInfos), 
-    std::move(factionOffsets));
-  
+  // Update the AI's
+  for (auto &faction : factions_)
+    faction->Update(deltaTime);
+    
   // Check collisions
   for (auto it = ships_->begin(); it != ships_->end(); ++it)
   {
@@ -136,9 +121,6 @@ void Battle::Update(float deltaTime)
       ship->set_hp(0);
       continue;
     }
-      
-    // Always fire
-    Fire(*ship);
 
     // Check for ship ship collision
     for (auto other = it + 1; other != ships_->end(); ++other)

@@ -42,6 +42,10 @@ public:
   /// Creates a ship for a specific faction
   ShipState* CreateShip(FactionState& faction);
 
+  /// Returns the ship pool
+  const ShipPool& ships() const { return *ships_; }
+  ShipPool& ships() { return *ships_; }
+
 private:
   bool TestCollision(const Entity& e1, const Entity& e2, float dt) const;
 

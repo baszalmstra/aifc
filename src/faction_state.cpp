@@ -4,6 +4,7 @@
 #include "ai_input.h"
 #include "faction_ai_command.h"
 #include "battle.h"
+#include "ship_pool.h"
 
 //---------------------------------------------------------------------------------------------------
 FactionState::FactionState(Battle& battle, uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai) :
@@ -29,15 +30,69 @@ ShipState *FactionState::CreateShip()
 }
 
 //---------------------------------------------------------------------------------------------------
-void FactionState::Update(const AIInput& worldState) const
+void FactionState::Update(float deltaTime)
 {
+  std::vector<ShipInfo> shipInfos;
+  std::vector<ShipInfo> friendlyShips;
+
+  // Gather info on all ships
+  for (auto &ship : battle_.ships())
+  {
+    shipInfos.emplace_back(
+      ship.faction().id(), ship.id(),
+      ship.hp(), ship.max_hp(),
+      ship.position(), ship.orientation(),
+      ship.mass(), ship.velocity(), ship.angular_velocity());
+
+    if (&ship.faction() == this)
+      friendlyShips.emplace_back(
+        ship.faction().id(), ship.id(),
+        ship.hp(), ship.max_hp(),
+        ship.position(), ship.orientation(),
+        ship.mass(), ship.velocity(), ship.angular_velocity());
+  }
+
+  // Create the input buffer
+  AIInput input(deltaTime,
+    std::move(shipInfos),
+    std::move(friendlyShips));
+
   FactionAICommand command;
-  ai_->Update(worldState, command);
+  ai_->Update(input, command);
 
 	const ActionBuffer& commandBuffer = command.read_buffer();
 	while (!commandBuffer.read_eof())
 	{
-		uint16_t eventId = commandBuffer.BeginReadEvent();
+		AIAction action = commandBuffer.BeginReadEvent();
+    ProcessAction(action, commandBuffer);
 		commandBuffer.EndReadEvent();
 	}
+}
+
+//---------------------------------------------------------------------------------------------------
+void FactionState::ProcessAction(AIAction action, const ActionBuffer& commandBuffer)
+{
+  ShipState* ship;
+  uint32_t shipId;
+  switch (action)
+  {
+  case kForce:
+    shipId = commandBuffer.ReadUInt();
+    ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
+    if (ship != nullptr && &ship->faction() == this)
+      ship->set_force(commandBuffer.ReadFloat());
+    break;
+  case kTorque:
+    shipId = commandBuffer.ReadUInt();
+    ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
+    if (ship != nullptr && &ship->faction() == this)
+      ship->set_torque(commandBuffer.ReadFloat());
+    break;
+  case kFire:
+    shipId = commandBuffer.ReadUInt();
+    ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
+    if (ship != nullptr && &ship->faction() == this)
+      battle_.Fire(*ship);
+    break;
+  }
 }

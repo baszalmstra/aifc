@@ -47,7 +47,7 @@ public:
   float mass() const { return mass_; }
   
   /// Returns the faction to which this ship belongs
-  const FactionState& faction() { return *faction_; }
+  const FactionState& faction() const { return *faction_; }
 
   /// Returns the amount of weapon energy has been built up
   float weapon_energy() const { return weaponEnergy_; }

@@ -1,13 +1,14 @@
 #pragma once
+
 #include <cstdint>
 #include <vector>
 #include <assert.h>
 
-
-enum AIAction {
-	FORCE = 0x0,
-	TORQUE,
-	SHOOT
+enum AIAction
+{
+  kForce,
+  kTorque,
+  kFire
 };
 
 class ActionBuffer
@@ -35,7 +36,7 @@ public:
 	* @brief Starts reading an event from the stream.
 	* @returns The id of the event
 	*/
-	uint16_t BeginReadEvent() const;
+	AIAction BeginReadEvent() const;
 
 	/**
 	* @brief Ends reading the current event, skipping the read position to the next event.
@@ -111,7 +112,7 @@ protected:
 		assert(readPosition_ + sizeof(ReadType) <= writePosition_);
 		const uint32_t pos = readPosition_;                       
 		readPosition_ += sizeof(ReadType);
-		return *reinterpret_cast<const ReadType*>(reinterpret_cast<const uint8_t*>(buffer_.at(pos)));
+		return *reinterpret_cast<const ReadType*>(&buffer_.at(pos));
 	}
 
 private:

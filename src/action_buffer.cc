@@ -78,7 +78,7 @@ void ActionBuffer::SkipWrite(uint32_t count)
 }
 
 //-------------------------------------------------------------------------------------------------
-uint16_t ActionBuffer::BeginReadEvent() const
+AIAction ActionBuffer::BeginReadEvent() const
 {
 	assert(nextReadEventPosition_ == kInvalidPosition);
 
@@ -89,7 +89,7 @@ uint16_t ActionBuffer::BeginReadEvent() const
 	// Determine next event position
 	nextReadEventPosition_ = readPosition_ - sizeof(size) - sizeof(id) + size;
 
-	return id;
+	return (AIAction)id;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ public:
   const std::string& name() const { return name_; }
 
   /// Updates the AI of the faction
-  void Update(const AIInput& worldState) const;
+  void Update(float deltaTime);
 
   /// Creates a ship for this faction
   ShipState *CreateShip();
