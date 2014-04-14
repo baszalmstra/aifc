@@ -6,10 +6,11 @@
 class FactionState;
 
 class Bullet;
-class ShipState : public Entity
+class ShipState final : public Entity
 {
 public:
   /// Default constructor
+  ShipState();
   ShipState(FactionState &faction, uint32_t id);
 
   /// Default destructor
@@ -46,7 +47,7 @@ public:
   float mass() const { return mass_; }
   
   /// Returns the faction to which this ship belongs
-  const FactionState& faction() { return faction_; }
+  const FactionState& faction() { return *faction_; }
 
   /// Returns the amount of weapon energy has been built up
   float weapon_energy() const { return weaponEnergy_; }
@@ -72,7 +73,7 @@ public:
 
 private:
   uint32_t id_;
-  FactionState &faction_;
+  FactionState *faction_;
   uint16_t maxHp_, hp_;
   float force_, torque_;
   float mass_;

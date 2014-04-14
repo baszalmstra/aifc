@@ -7,6 +7,7 @@
 #include "ai_input.h"
 #include "bullet.h"
 #include "entity.h"
+#include "ship_pool.h"
 #include <cstdlib>
 #include <iostream>
 #include <SDL_opengl.h>
@@ -44,7 +45,8 @@ namespace {
 //-------------------------------------------------------------------------------------------------
 Battle::Battle() :
   battleTime_(0.0f),
-  bounds_(100.0f, 100.0f)
+  bounds_(100.0f, 100.0f),
+  ships_(new ShipPool())
 {
 
 }
@@ -59,7 +61,7 @@ Battle::~Battle()
 void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 {
   const uint32_t numAIs = 4;
-  const uint32_t numShips = 30;
+  const uint32_t numShips = 10;
 
   // Initialize random ais
   uint32_t randOffset = rand() % 4;
@@ -110,12 +112,12 @@ void Battle::Update(float deltaTime)
   std::vector<uint16_t> factionOffsets;
 
   // Gather info on all ships
-  for (auto &ship : ships_)
+  for (auto &ship : *ships_)
     shipInfos.emplace_back(
-    ship->faction().id(), ship->id(),
-    ship->hp(), ship->max_hp(),
-    ship->position(), ship->orientation(),
-    ship->mass(), ship->velocity(), ship->angular_velocity());
+      ship.faction().id(), ship.id(),
+      ship.hp(), ship.max_hp(),
+      ship.position(), ship.orientation(),
+      ship.mass(), ship.velocity(), ship.angular_velocity());
 
   // Create the input buffer
   AIInput input(deltaTime, 
@@ -123,9 +125,9 @@ void Battle::Update(float deltaTime)
     std::move(factionOffsets));
   
   // Check collisions
-  for (uint32_t i = 0; i < ships_.size(); ++i)
+  for (auto it = ships_->begin(); it != ships_->end(); ++it)
   {
-    ShipState* ship = ships_[i].get();
+    ShipState *ship = &(*it);
 
     // Make sure ship isn't out of bounds yet
     if (!in_bounds(ship->position()))
@@ -139,13 +141,12 @@ void Battle::Update(float deltaTime)
     Fire(*ship);
 
     // Check for ship ship collision
-    for (uint32_t j = i + 1; j < ships_.size(); ++j)
+    for (auto other = it + 1; other != ships_->end(); ++other)
     {
-      ShipState* ship2 = ships_[j].get();
-      if (TestCollision(*ship, *ship2, deltaTime)) 
+      if (TestCollision(*ship, *other, deltaTime))
       {
         ship->set_hp(0);
-        ship2->set_hp(0);
+        other->set_hp(0);
         //std::cout << "Ship collision" << std::endl;
       }
     }
@@ -167,16 +168,11 @@ void Battle::Update(float deltaTime)
   }
 
   // Walk over all ships and remove dead ones
-  for (uint32_t i = 0; i < ships_.size();)
-    if (ships_[i]->is_dead())
-    {
-      if (i < ships_.size() - 1)
-        std::swap(ships_[i], ships_.back());
-
-      ships_.pop_back();
-    }
+  for (auto it = ships_->begin(); it != ships_->end();)
+    if (it->is_dead())
+      it = ships_->erase(it);
     else
-      ++i;
+      ++it;
   
   // Update all bullets
   for (uint32_t i = 0; i < bullets_.size();)
@@ -198,8 +194,7 @@ void Battle::Update(float deltaTime)
 //-------------------------------------------------------------------------------------------------
 ShipState* Battle::CreateShip(FactionState& faction)
 {
-  ships_.emplace_back(new ShipState(faction, (uint32_t)(ships_.size() - 1)));
-  return ships_.back().get();
+  return &ships_->Add(faction);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -212,8 +207,8 @@ void Battle::Draw()
   glEnd();
 
   // Draw all ships
-  for (auto &ship : ships_)
-    ship->Draw();
+  for (auto &ship : *ships_)
+    ship.Draw();
   
   for(auto &bullet : bullets_)
     bullet->Draw();

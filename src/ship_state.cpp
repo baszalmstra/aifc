@@ -12,9 +12,15 @@ namespace {
 }
 
 //-------------------------------------------------------------------------------------------------
+ShipState::ShipState() : id_(0)
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
 ShipState::ShipState(FactionState &faction, uint32_t id) :
   id_(id),
-  faction_(faction),
+  faction_(&faction),
   maxHp_(100),
   hp_(maxHp_),
   force_(0.0f), torque_(0.0f),
@@ -43,7 +49,7 @@ void ShipState::Draw()
     if (hitTime_ > 0)
       glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     else
-      glColor4fv(faction_.color());
+      glColor4fv(faction_->color());
     glVertex3f(0.5f, 0.0f, 0.0f);
     glVertex3f(0.0f, 1.0f, 0.0f);
     glVertex3f(0.0f, 0.2f, 0.0f);

@@ -41,6 +41,8 @@ SET(Internal_Source
   "src/main.cpp"
   "src/plugin_wrapper.cpp"
   "src/plugin_wrapper.h"
+  "src/ship_pool.cc"
+  "src/ship_pool.h"
   "src/ship_state.cpp"
   "src/ship_state.h")
 

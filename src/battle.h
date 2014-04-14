@@ -10,6 +10,7 @@ class FactionState;
 class Entity;
 class Bullet;
 class ShipState;
+class ShipPool;
 
 class Battle final
 {
@@ -46,8 +47,9 @@ private:
 
 private:
   std::vector<std::unique_ptr<FactionState> > factions_;
-  std::vector<std::unique_ptr<Bullet>> bullets_;
-  std::vector<std::unique_ptr<ShipState>> ships_;
+  std::vector<std::unique_ptr<Bullet>> bullets_;  
+  std::unique_ptr<ShipPool> ships_;
+
   double battleTime_;
   Vec2f bounds_;
 };
