@@ -10,12 +10,13 @@ class ShipState;
 class IAI;
 class AIInput;
 class ActionBuffer;
+class Battle;
 
 class FactionState
 {
 public:
   /// Default constructor
-  FactionState(uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai);
+  FactionState(Battle& battle, uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai);
 
   /// Default destructor
   ~FactionState();
@@ -26,26 +27,23 @@ public:
   /// Returns the name of the faction
   const std::string& name() const { return name_; }
 
-  /// Returns a vector with all the ships of this faction
-  const std::vector<std::unique_ptr<ShipState>> &ships() const { return ships_; }
-
-  /// Removes dead ships from the faction
-  void RemoveDeadShips();
-
   /// Updates the AI of the faction
   void Update(const AIInput& worldState) const;
 
   /// Creates a ship for this faction
   ShipState *CreateShip();
 
+  /// Returns the id of the faction
+  uint32_t id() const { return id_; }
+
 private:
 	void ProcessAction(AIAction action, const ActionBuffer& commandBuffer);
 
 private:
+  Battle& battle_;
   uint32_t id_;
   std::string name_;
   Color color_;
 
-  std::vector<std::unique_ptr<ShipState>> ships_;
   std::unique_ptr<IAI> ai_;
 };

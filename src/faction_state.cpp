@@ -3,9 +3,11 @@
 #include "ai/i_ai.h"
 #include "ai_input.h"
 #include "faction_ai_command.h"
+#include "battle.h"
 
 //---------------------------------------------------------------------------------------------------
-FactionState::FactionState(uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai) :
+FactionState::FactionState(Battle& battle, uint32_t id, const std::string &name, const Color& color, std::unique_ptr<IAI> ai) :
+  battle_(battle),
   id_(id),
   name_(name),
   color_(color),
@@ -23,10 +25,7 @@ FactionState::~FactionState()
 //---------------------------------------------------------------------------------------------------
 ShipState *FactionState::CreateShip()
 {
-  std::unique_ptr<ShipState> ship(new ShipState(*this, id_ | (uint32_t) (ships_.size()) << 3));
-  ShipState *shipPtr = ship.get();
-  ships_.emplace_back(std::move(ship));
-  return shipPtr;
+  return battle_.CreateShip(*this);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -39,20 +38,6 @@ void FactionState::Update(const AIInput& worldState) const
 	while (!commandBuffer.read_eof())
 	{
 		uint16_t eventId = commandBuffer.BeginReadEvent();
-
 		commandBuffer.EndReadEvent();
 	}
-
-  for (auto &ship : ships_)
-    ship->Update(worldState.delta_time());
-}
-
-//---------------------------------------------------------------------------------------------------
-void FactionState::RemoveDeadShips()
-{
-  for (auto it = ships_.begin(); it != ships_.end();)
-    if ((*it)->is_dead())
-      it = ships_.erase(it);
-    else
-      ++it;
 }

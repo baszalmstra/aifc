@@ -48,7 +48,6 @@ public:
 	/// Reset read an write cursor to start of stream
 	void reset();
 
-
 	/** Writing in the stream **/
 public:
 	/// Write a bool to the output stream

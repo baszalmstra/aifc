@@ -38,12 +38,16 @@ public:
   /// Returns true if a certain position is in bounds
   bool in_bounds(const Vec2f &pos) const { return pos.x >= -bounds_.x && pos.x <= bounds_.x && pos.y >= -bounds_.y && pos.y <= bounds_.y; }
 
+  /// Creates a ship for a specific faction
+  ShipState* CreateShip(FactionState& faction);
+
 private:
   bool TestCollision(const Entity& e1, const Entity& e2, float dt) const;
 
 private:
   std::vector<std::unique_ptr<FactionState> > factions_;
   std::vector<std::unique_ptr<Bullet>> bullets_;
+  std::vector<std::unique_ptr<ShipState>> ships_;
   double battleTime_;
   Vec2f bounds_;
 };
