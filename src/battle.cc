@@ -40,12 +40,19 @@ namespace {
   };
 
   uint32_t randomColorCount = sizeof(randomColors) / sizeof(Color) / 4;
+
+  //-------------------------------------------------------------------------------------------------
+  Vec2f startingOffsets [][4] = {
+    { Vec2f(-1.0f, -1.0f), Vec2f(1.0f, 1.0f), Vec2f(), Vec2f() },
+    { Vec2f(-1.0f, -1.0f), Vec2f(1.0f, -1.0f), Vec2f(0.0f, 1.0f), Vec2f() },
+    { Vec2f(-1.0f, -1.0f), Vec2f(1.0f, -1.0f), Vec2f(-1.0f, 1.0f), Vec2f(1.0f, 1.0f) },
+  };
 }
 
 //-------------------------------------------------------------------------------------------------
 Battle::Battle() :
   battleTime_(0.0f),
-  bounds_(100.0f, 100.0f),
+  bounds_(50.0f, 50.0f),
   ships_(new ShipPool())
 {
 
@@ -60,8 +67,8 @@ Battle::~Battle()
 //-------------------------------------------------------------------------------------------------
 void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 {
-  const uint32_t numAIs = 4;
-  const uint32_t numShips = 10;
+  const uint32_t numAIs = 2;
+  const uint32_t numShips = 16;
 
   // Initialize random ais
   uint32_t randOffset = rand() % 4;
@@ -75,16 +82,24 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 
     // Insert the faction
     factions_.emplace_back(new FactionState(*this, i, ai->name(), Color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f), ai->CreateAI(i)));
-  }
+    FactionState &faction = *factions_.back();
 
-  // Create a few ships per faction
-  for (auto &faction : factions_)
-  {
-    for (uint32_t i = 0; i < numShips; ++i)
+    // Create ships
+    for (uint32_t j = 0; j < numShips; ++j)
     {
-      ShipState *ship = CreateShip(*faction);
-      ship->set_position(Vec2f((float)rand() / (float)RAND_MAX * 100.0f- 50.0f,
-                                (float)rand() / (float)RAND_MAX * 100.0f - 50.0f));
+      int gridSize = (int)std::ceil(sqrt(numShips));
+      int xPos = j % gridSize;
+      int yPos = (j - xPos) / gridSize;
+      float spacing = 1.f;
+      float width = gridSize + spacing * (gridSize - 1);
+      float height = gridSize + spacing * (gridSize - 1);
+            
+      ShipState *ship = CreateShip(faction);
+      ship->set_position(Vec2f(bounds_.x * startingOffsets[numAIs-2][i].x * 0.8f + (-width / 2 + xPos + xPos*spacing),
+                               bounds_.y * startingOffsets[numAIs - 2][i].y * 0.8f + (-height / 2 + yPos + yPos*spacing)));
+
+      // Orient it to the center
+      ship->set_orientation(std::atan2(startingOffsets[numAIs - 2][i].y, startingOffsets[numAIs - 2][i].x) + 1.57f);
     }
   }
 
