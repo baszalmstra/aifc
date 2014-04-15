@@ -81,6 +81,7 @@ TARGET_LINK_LIBRARIES(aifc
   ${OPENGL_gl_LIBRARY})
 
 #--------------------------------------------------------------------------------------------------
-# Test AI
+# AI's
 #--------------------------------------------------------------------------------------------------
 ADD_LIBRARY(testai SHARED test/testai.cpp test/testai.h test/ai_plugin.cpp test/ai_plugin.h)
+ADD_LIBRARY(babai SHARED babai/babai.cpp babai/babai.h babai/ai_plugin.cpp babai/ai_plugin.h)

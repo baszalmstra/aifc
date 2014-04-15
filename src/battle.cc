@@ -52,7 +52,7 @@ namespace {
 //-------------------------------------------------------------------------------------------------
 Battle::Battle() :
   battleTime_(0.0f),
-  bounds_(50.0f, 50.0f),
+  bounds_(50.0f * 16.f/9.f, 50.0f),
   ships_(new ShipPool())
 {
 
@@ -67,8 +67,8 @@ Battle::~Battle()
 //-------------------------------------------------------------------------------------------------
 void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
 {
-  const uint32_t numAIs = 2;
-  const uint32_t numShips = 16;
+  const uint32_t numAIs = 4;
+  const uint32_t numShips = 25;
 
   // Initialize random ais
   uint32_t randOffset = rand() % 4;
@@ -99,7 +99,7 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
                                bounds_.y * startingOffsets[numAIs - 2][i].y * 0.8f + (-height / 2 + yPos + yPos*spacing)));
 
       // Orient it to the center
-      ship->set_orientation(std::atan2(startingOffsets[numAIs - 2][i].y, startingOffsets[numAIs - 2][i].x) + 1.57f);
+      ship->set_orientation(std::atan2(startingOffsets[numAIs - 2][i].y, startingOffsets[numAIs - 2][i].x) + 3.141592654f);
     }
   }
 
@@ -138,15 +138,15 @@ void Battle::Update(float deltaTime)
     }
 
     // Check for ship ship collision
-    for (auto other = it + 1; other != ships_->end(); ++other)
-    {
-      if (TestCollision(*ship, *other, deltaTime))
-      {
-        ship->set_hp(0);
-        other->set_hp(0);
-        //std::cout << "Ship collision" << std::endl;
-      }
-    }
+    //for (auto other = it + 1; other != ships_->end(); ++other)
+    //{
+    //  if (TestCollision(*ship, *other, deltaTime))
+    //  {
+    //    ship->set_hp(0);
+    //    other->set_hp(0);
+    //    //std::cout << "Ship collision" << std::endl;
+    //  }
+    //}
 
     // Check for ship ship collision
     for(auto &bullet : bullets_) 
@@ -223,7 +223,7 @@ void Battle::Fire(ShipState& ship)
   
   Bullet* bullet = new Bullet(ship.faction(), energy);
 
-  Vec2f direction(-std::sin(ship.orientation()), std::cos(ship.orientation()));
+  Vec2f direction(std::cos(ship.orientation()), std::sin(ship.orientation()));
 
   bullet->set_position(ship.position() + bullet->height() * direction);
   bullet->set_orientation(ship.orientation());

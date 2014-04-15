@@ -54,6 +54,7 @@ void FactionState::Update(float deltaTime)
 
   // Create the input buffer
   AIInput input(deltaTime,
+    battle_.bounds(),
     std::move(shipInfos),
     std::move(friendlyShips));
 
@@ -80,13 +81,13 @@ void FactionState::ProcessAction(AIAction action, const ActionBuffer& commandBuf
     shipId = commandBuffer.ReadUInt();
     ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
     if (ship != nullptr && &ship->faction() == this)
-      ship->set_force(commandBuffer.ReadFloat());
+      ship->set_force(std::max(0.0f, std::min((float)AICommand::kMaxForce, commandBuffer.ReadFloat())));
     break;
   case kTorque:
     shipId = commandBuffer.ReadUInt();
     ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
     if (ship != nullptr && &ship->faction() == this)
-      ship->set_torque(commandBuffer.ReadFloat());
+      ship->set_torque(std::max((float) -AICommand::kMaxTorque, std::min((float) AICommand::kMaxTorque, commandBuffer.ReadFloat())));
     break;
   case kFire:
     shipId = commandBuffer.ReadUInt();

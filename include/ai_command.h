@@ -6,6 +6,13 @@
 typedef uint32_t ShipId;
 
 class AICommand {
+public:
+  enum {
+    kMaxTorque = 1000,
+    kMaxForce = 100,
+    kMaxEnergy = 100,
+    kFireThreshold = 5,
+  };
 
 public:
   /// Default destructor

@@ -1,4 +1,5 @@
 #include "faction_ai_command.h"
+#include <algorithm>
 
 //-------------------------------------------------------------------------------------------------
 FactionAICommand::FactionAICommand() 

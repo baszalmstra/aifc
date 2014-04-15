@@ -39,6 +39,9 @@ public:
   /// Returns true if a certain position is in bounds
   bool in_bounds(const Vec2f &pos) const { return pos.x >= -bounds_.x && pos.x <= bounds_.x && pos.y >= -bounds_.y && pos.y <= bounds_.y; }
 
+  /// Returns the bounds of the world
+  const Vec2f &bounds() const { return bounds_; }
+
   /// Creates a ship for a specific faction
   ShipState* CreateShip(FactionState& faction);
 

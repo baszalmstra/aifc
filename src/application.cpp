@@ -149,6 +149,7 @@ bool Application::Initialize()
 
   // Load the plugin with the given name
   plugins_.emplace_back(PluginWrapper::LoadPlugin("testai"));
+  plugins_.emplace_back(PluginWrapper::LoadPlugin("babai"));
   if (std::any_of(plugins_.cbegin(), plugins_.cend(), [](const std::unique_ptr<PluginWrapper> &wrapper) { return !wrapper; }))
     return false;
 

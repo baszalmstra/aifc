@@ -50,12 +50,12 @@ void ShipState::Draw()
       glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     else
       glColor4fv(faction_->color());
-    glVertex3f(0.5f, 0.0f, 0.0f);
-    glVertex3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(0.0f, 0.2f, 0.0f);
-    glVertex3f(0.0f, 0.2f, 0.0f);
-    glVertex3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(-0.5f, 0.0f, 0.0f);        
+    glVertex3f(0.0f, 0.5f, 0.0f);
+    glVertex3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.2f, 0.0f, 0.0f);
+    glVertex3f(0.2f, 0.0f, 0.0f);
+    glVertex3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, -0.5f, 0.0f);        
   glEnd();
 
   glPopMatrix();
@@ -69,8 +69,12 @@ void ShipState::Update(float deltaTime)
   set_angular_velocity(angular_velocity() + angularAcceleration * deltaTime);
   set_orientation(orientation() + angular_velocity() * deltaTime);
 
+  while (orientation() < 0.0f)
+    set_orientation(orientation() + 3.141592654f*2.0f);
+  set_orientation(std::fmod(orientation(), 3.141592654f * 2.0f));
+
   // Calculate the direction of force
-  Vec2f directionOfForce(-std::sin(orientation()), std::cos(orientation()));
+  Vec2f directionOfForce(std::cos(orientation()), std::sin(orientation()));
   
   // Calculate the acceleration
   float acceleration = force_ / mass_;

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <cmath>
 
 // --------------------------------------------------------------------------------
 
@@ -33,6 +34,9 @@ public:
 
   /// multiplies vector with a scalar
   friend Vec2 operator*(T s, const Vec2& v) { return Vec2(v.x * s, v.y * s); }
+
+  /// Returns the normalized version of the vector
+  Vec2 normalized() const { T len = 1.0f / std::sqrt(dot(*this)); return Vec2(x*len, y*len); }
 
   Vec2 &operator+=(const Vec2& v) { x += v.x; y += v.y; return *this; }
   Vec2 &operator-=(const Vec2& v) { x -= v.x; y -= v.y; return *this; }

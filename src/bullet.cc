@@ -25,8 +25,8 @@ void Bullet::Draw()
   Vec2f pos(position());
 
   // Draw all bullets
-  float dirY = std::cos(orientation());
-  float dirX = std::sin(orientation());
+  float dirX = std::cos(orientation());
+  float dirY = std::sin(orientation());  
   const float width = energy_/400.0f+0.2f;
 
   Color bulletColor(faction_.color());
@@ -41,11 +41,11 @@ void Bullet::Draw()
 
   const float halfWidth = width*0.5f;
   glColor4fv(bulletColor);
-  glVertex3f(height_*0.2f * -dirX + pos.x, height_*0.2f * dirY + pos.y, 0.0f);
-  glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
-  glVertex3f(halfWidth*dirY + pos.x, halfWidth*dirX + pos.y, 0.0f);
-  glVertex3f(halfWidth*dirY + pos.x, halfWidth*dirX + pos.y, 0.0f);
-  glVertex3f(-halfWidth*dirY + pos.x, -halfWidth*dirX + pos.y, 0.0f);
+  glVertex3f(height_*0.2f*dirX + pos.x, height_*0.2f*dirY + pos.y, 0.0f);
+  glVertex3f(-halfWidth*dirY + pos.x, dirX*halfWidth + pos.y, 0.0f);
+  glVertex3f(halfWidth*dirY + pos.x, dirX*-halfWidth + pos.y, 0.0f);
+  glVertex3f(halfWidth*dirY + pos.x, dirX*-halfWidth + pos.y, 0.0f);
+  glVertex3f(-halfWidth*dirY + pos.x, dirX*halfWidth + pos.y, 0.0f);
   glColor4fv(darkBulletColor);
-  glVertex3f(-height_*0.8f*-dirX + pos.x, -height_*0.8f*dirY + pos.y, 0.0f);
+  glVertex3f(-height_*0.8f*dirX + pos.x, -height_*0.8f*dirY + pos.y, 0.0f);
 }
