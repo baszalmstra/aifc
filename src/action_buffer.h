@@ -4,6 +4,8 @@
 #include <vector>
 #include <assert.h>
 
+#include "math_types.h"
+
 enum AIAction
 {
   kForce,
@@ -75,6 +77,9 @@ public:
 	/// Write a double to the output stream
 	void WriteDouble(double value);
 
+  /// Writes a 2d vector
+  void WriteVec2(const Vec2f& vec);
+
 	/** Reading in the stream **/
 public:
 
@@ -101,6 +106,9 @@ public:
 
 	/// Read a double from the stream
 	const double& ReadDouble() const;
+
+  /// Reads a vec2f 
+  const Vec2f& ReadVec2f() const;
 
 protected:
 	/// Write to the output stream

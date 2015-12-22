@@ -38,6 +38,12 @@ public:
   /// Returns the normalized version of the vector
   Vec2 normalized() const { T len = 1.0f / std::sqrt(dot(*this)); return Vec2(x*len, y*len); }
 
+  /// Returns the length of the vector
+  float length() const { return std::sqrt(dot(*this)); }
+
+  /// Returns the squared length of the vector
+  float lengthSquared() const { return dot(*this); }
+
   Vec2 &operator+=(const Vec2& v) { x += v.x; y += v.y; return *this; }
   Vec2 &operator-=(const Vec2& v) { x -= v.x; y -= v.y; return *this; }
   Vec2 &operator*=(const Vec2& v) { x *= v.x; y *= v.y; return *this; }

@@ -17,10 +17,7 @@ public:
 
 public:
   /// Set the velocity of the ship with the given id
-  void SetShipForce(uint32_t shipId, float force) override;
-
-  /// Set the angular force of the ship with the given id
-  void SetShipTorque(uint32_t shipId, float force) override;
+  void ApplyShipForce(uint32_t shipId, const Vec2f& force) override;
 
   /// Tells the specified ship to fire
   void Fire(uint32_t shipId) override;

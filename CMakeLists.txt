@@ -6,8 +6,8 @@ PROJECT(aifc)
 #--------------------------------------------------------------------------------------------------
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
-   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR
+   ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     SET(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ENDIF()
 
@@ -22,7 +22,7 @@ FIND_PACKAGE(SDL2_image REQUIRED)
 # Setup source files
 #--------------------------------------------------------------------------------------------------
 
-SET(Internal_Source   
+SET(Internal_Source
   "src/application.cpp"
   "src/application.h"
   "src/action_buffer.h"
@@ -58,6 +58,7 @@ SET(Public_Source
 
 INCLUDE_DIRECTORIES(
   "include"
+  ${PROJECT_SOURCE_DIR}/external/rapidjson/include
   ${SDL2_INCLUDE_DIR}
   ${SDL2_IMAGE_INCLUDE_DIRS})
 
@@ -84,4 +85,4 @@ TARGET_LINK_LIBRARIES(aifc
 # AI's
 #--------------------------------------------------------------------------------------------------
 ADD_LIBRARY(testai SHARED test/testai.cpp test/testai.h test/ai_plugin.cpp test/ai_plugin.h)
-ADD_LIBRARY(babai SHARED babai/babai.cpp babai/babai.h babai/ai_plugin.cpp babai/ai_plugin.h)
+ADD_LIBRARY(beskebot SHARED babai/babai.cpp babai/babai.h babai/ai_plugin.cpp babai/ai_plugin.h babai/steering.h babai/steering.cc)

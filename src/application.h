@@ -27,6 +27,9 @@ private:
   /// Initializes the application
   bool Initialize();
 
+  /// Reads the configuration file
+  bool ReadConfig();
+
   /// Tears down the application
   bool Destroy();
 
@@ -51,4 +54,7 @@ private:
 
   std::chrono::time_point<std::chrono::high_resolution_clock> lastTime_;
   float remainingUpdateTime_;
+
+  uint32_t numAIs_ = 4;
+  uint32_t numShips_ = 25;
 };

@@ -4,6 +4,7 @@
 #include <SDL_opengl.h>
 #include <cmath>
 #include <algorithm>
+#include "ai_command.h"
 
 //-------------------------------------------------------------------------------------------------
 namespace {
@@ -23,7 +24,7 @@ ShipState::ShipState(FactionState &faction, uint32_t id) :
   faction_(&faction),
   maxHp_(100),
   hp_(maxHp_),
-  force_(0.0f), torque_(0.0f),
+  force_(0.0f),
   mass_(1.0f), 
   weaponEnergy_(0.0f),
   weaponRechargeRate_(50.0f),
@@ -64,21 +65,24 @@ void ShipState::Draw()
 //-------------------------------------------------------------------------------------------------
 void ShipState::Update(float deltaTime)
 {
-  // Calculate the angular acceleration
-  float angularAcceleration = torque_ / mass_;
-  set_angular_velocity(angular_velocity() + angularAcceleration * deltaTime);
-  set_orientation(orientation() + angular_velocity() * deltaTime);
+  // Determine acceleration
+  Vec2f accel = force_ / mass_;
+  force_ = Vec2f(0, 0);
 
-  while (orientation() < 0.0f)
-    set_orientation(orientation() + 3.141592654f*2.0f);
-  set_orientation(std::fmod(orientation(), 3.141592654f * 2.0f));
+  // Update velocity
+  Vec2f newVelocity = velocity() + accel*deltaTime;
+  float velocityLengthSquared = newVelocity.lengthSquared();
+  if (velocityLengthSquared > AICommand::kMaxSpeed*AICommand::kMaxSpeed)
+    newVelocity = newVelocity / std::sqrt(velocityLengthSquared) * AICommand::kMaxSpeed;
 
-  // Calculate the direction of force
-  Vec2f directionOfForce(std::cos(orientation()), std::sin(orientation()));
-  
-  // Calculate the acceleration
-  float acceleration = force_ / mass_;
-  set_velocity(velocity() + directionOfForce * acceleration * static_cast<float>(deltaTime));
+  // Set the velocity
+  set_velocity(newVelocity);
+
+  // Update the orientation
+  if (newVelocity.lengthSquared() > 0)
+  {
+    set_orientation(std::atan2(newVelocity.y, newVelocity.x));
+  }
 
   // Update the position
   set_position(position() + velocity() * deltaTime);

@@ -12,20 +12,11 @@ FactionAICommand::~FactionAICommand()
 }
 
 //-------------------------------------------------------------------------------------------------
-void FactionAICommand::SetShipForce(uint32_t ship, float force)
+void FactionAICommand::ApplyShipForce(uint32_t ship, const Vec2f& force)
 {
   buffer_.BeginWrite(kForce);
   buffer_.WriteUInt(ship);
-  buffer_.WriteFloat(force);
-  buffer_.EndWrite();
-}
-
-//-------------------------------------------------------------------------------------------------
-void FactionAICommand::SetShipTorque(uint32_t ship, float force)
-{
-  buffer_.BeginWrite(kTorque);
-  buffer_.WriteUInt(ship);
-  buffer_.WriteFloat(force);
+  buffer_.WriteVec2(force);
   buffer_.EndWrite();
 }
 

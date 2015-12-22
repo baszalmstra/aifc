@@ -1,0 +1,7 @@
+{
+  "plugins" : [
+    "beskebot"
+  ],
+  "numAIs" : 4,
+  "numShips" : 25
+}

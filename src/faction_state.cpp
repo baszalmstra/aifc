@@ -42,14 +42,14 @@ void FactionState::Update(float deltaTime)
       ship.faction().id(), ship.id(),
       ship.hp(), ship.max_hp(),
       ship.position(), ship.orientation(),
-      ship.mass(), ship.velocity(), ship.angular_velocity());
+      ship.mass(), ship.velocity());
 
     if (&ship.faction() == this)
       friendlyShips.emplace_back(
         ship.faction().id(), ship.id(),
         ship.hp(), ship.max_hp(),
         ship.position(), ship.orientation(),
-        ship.mass(), ship.velocity(), ship.angular_velocity());
+        ship.mass(), ship.velocity());
   }
 
   // Create the input buffer
@@ -81,13 +81,13 @@ void FactionState::ProcessAction(AIAction action, const ActionBuffer& commandBuf
     shipId = commandBuffer.ReadUInt();
     ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
     if (ship != nullptr && &ship->faction() == this)
-      ship->set_force(std::max(0.0f, std::min((float)AICommand::kMaxForce, commandBuffer.ReadFloat())));
-    break;
-  case kTorque:
-    shipId = commandBuffer.ReadUInt();
-    ship = battle_.ships().has(shipId) ? &battle_.ships().lookup(shipId) : nullptr;
-    if (ship != nullptr && &ship->faction() == this)
-      ship->set_torque(std::max((float) -AICommand::kMaxTorque, std::min((float) AICommand::kMaxTorque, commandBuffer.ReadFloat())));
+    {
+      Vec2f force = commandBuffer.ReadVec2f();
+      float totalForceSquared = force.lengthSquared();
+      if (totalForceSquared > AICommand::kMaxForce*AICommand::kMaxForce)
+        force = force.normalized() * AICommand::kMaxForce;        
+      ship->set_force(force);
+    }
     break;
   case kFire:
     shipId = commandBuffer.ReadUInt();

@@ -22,7 +22,7 @@ public:
   ~Battle();
 
   // Initializes a random battle from ai's
-  void Initialize(const std::vector<IAIPlugin*> &ais);
+  void Initialize(const std::vector<IAIPlugin*> &ais, uint32_t numAIs = 4, uint32_t numShips = 25);
 
   // Updates the battle
   void Update(float deltaTime);

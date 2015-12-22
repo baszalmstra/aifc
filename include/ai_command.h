@@ -3,14 +3,15 @@
 #include <vector>
 #include <cstdint>
 
+#include "math_types.h"
+
 typedef uint32_t ShipId;
 
 class AICommand {
 public:
   enum {
-    kMaxTorque = 1000,
-    kMaxForce = 100,
-    kMaxEnergy = 100,
+    kMaxSpeed = 40,
+    kMaxForce = 500,
     kFireThreshold = 5,
   };
 
@@ -18,12 +19,9 @@ public:
   /// Default destructor
   virtual ~AICommand() {};
 
-  /// Set the velocity of the ship with the given id
-  virtual void SetShipForce(uint32_t shipId, float force) = 0;
-
-  /// Set the angular force of the ship with the given id
-  virtual void SetShipTorque(uint32_t shipId, float force) = 0;
-
+  /// Apply a force to the ship
+  virtual void ApplyShipForce(uint32_t shipId, const Vec2f& force) = 0;
+  
   /// Tells the specified ship to fire
   virtual void Fire(uint32_t shipId) = 0;
 };

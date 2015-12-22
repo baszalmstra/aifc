@@ -152,6 +152,13 @@ void ActionBuffer::WriteDouble(double value)
 }
 
 //-------------------------------------------------------------------------------------------------
+void ActionBuffer::WriteVec2(const Vec2f& vec)
+{
+  WriteFloat(vec.x);
+  WriteFloat(vec.y);
+}
+
+//-------------------------------------------------------------------------------------------------
 const bool& ActionBuffer::ReadBool() const
 {
 	return Read<bool>();
@@ -197,4 +204,10 @@ const float& ActionBuffer::ReadFloat() const
 const double& ActionBuffer::ReadDouble() const
 {
 	return Read<double>();
+}
+
+//-------------------------------------------------------------------------------------------------
+const Vec2f& ActionBuffer::ReadVec2f() const
+{
+  return Read<Vec2f>();
 }

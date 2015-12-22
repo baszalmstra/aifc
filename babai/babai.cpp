@@ -6,6 +6,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "steering.h"
+
 //-------------------------------------------------------------------------------------------------
 namespace {
   const float pi = 3.141592654f;
@@ -20,12 +22,39 @@ namespace {
       result += twoPi;
     return result;
   }
+
+  //-------------------------------------------------------------------------------------------------
+  bool AccumulateForce(Vec2f &runningTotal, const Vec2f& toAdd)
+  {
+    float magnitudeSoFar = runningTotal.length();
+    float magnitudeRemaining = AICommand::kMaxForce - magnitudeSoFar;
+    if (magnitudeRemaining <= 0.0f)
+      return false;
+
+    float magnitudeToAdd = toAdd.length();
+    if (magnitudeToAdd < magnitudeRemaining)
+      runningTotal += toAdd;
+    else
+      runningTotal += toAdd.normalized() * magnitudeRemaining;
+    return true;
+  }
 }
+
+struct Babai::Ship 
+{
+  Ship(const Vec2f& bounds) :
+    steering(bounds)
+  {}
+
+  Steering steering;
+  uint32_t target;
+};
 
 //-------------------------------------------------------------------------------------------------
 Babai::Babai(uint32_t id) : 
   id_(id), 
-  randomOffset_(rand())
+  randomOffset_(rand()),
+  time_(0.0f)
 {
 }
 
@@ -37,58 +66,56 @@ Babai::~Babai()
 //-------------------------------------------------------------------------------------------------
 void Babai::Update(const AIInput& input, AICommand& command)
 {
-  std::vector<ShipInfo const*> enemyShips;
-  Vec2f otherShip = Vec2f(0.0f, 0.0f);
-  for (const ShipInfo &enemy : input.ships())
-    if (enemy.faction_id() != id_)
-      enemyShips.push_back(&enemy);
+  // Gather all enemy ships
+  std::vector<ShipInfo const*> enemies;
+  std::unordered_map<ShipId, ShipInfo const*> idToEnemy;
+  for (auto& info : input.ships())
+    if (info.faction_id() != id_)
+    {
+      enemies.emplace_back(&info);
+      idToEnemy.emplace(info.id(), &info);
+    }
 
-  for (uint32_t i = 0; i < input.friendly_ships().size(); ++i)
-  {  
-    const ShipInfo &ship = input.friendly_ships()[i];
-    ShipInfo const*enemy = enemyShips.empty() ? nullptr : enemyShips[(randomOffset_+i)%enemyShips.size()];
+  // Walk over all ships
+  for (auto &info : input.friendly_ships())
+  {
+    // Do we have this in our map yet?
+    auto it = steeringBehaviors_.find(info.id());
+    if (it == steeringBehaviors_.end())
+    {
+      it = steeringBehaviors_.emplace(info.id(), std::unique_ptr<Ship>(new Ship(input.bounds()))).first;
+      it->second->target = 0xffffffff;
+    }
 
-    // Go to the center of the galaxy
-    Vec2f currentHeading(std::sin(ship.orientation()), std::cos(ship.orientation()));
+    // Get the steering behavior
+    Steering &steering = it->second->steering;
+
+    // Select a target if this ship doesn't have a target yet.
+    ShipInfo const *target = nullptr;
+    if (it->second->target == 0xffffffff && enemies.size() > 0 && (id_ % 2) == 1)
+      it->second->target = enemies[std::rand() % enemies.size()]->id();
+
+    // Find the target
+    if (it->second->target != 0xffffffff)
+    {
+      auto targetIt = idToEnemy.find(it->second->target);
+      if (targetIt != idToEnemy.end())
+        target = targetIt->second;
+    }
+
+    // No enemy this frame
+    if (!target)
+      it->second->target = 0xffffffff;
+
+    Vec2f force(0, 0);
+    AccumulateForce(force, steering.avoid_bounds(info, input.delta_time())*10);
+    if (target) AccumulateForce(force, steering.persuit(info, *target));
+    else AccumulateForce(force, steering.wander(info, input.delta_time()));
     
-    // Rotate to that position
-    const Vec2f direction = (enemy ? enemy->position() : Vec2f(0.0f)) - ship.position();
-    const Vec2f heading = direction.normalized();
-    const float headingDotDir = ship.velocity().normalized().dot(heading);
-    const float speed = heading.dot(ship.velocity());
-    if (speed < 10.0f)
-      command.SetShipForce(ship.id(), (10-speed)/input.delta_time());
-    else
-      command.SetShipForce(ship.id(), 0.0f);
+    command.ApplyShipForce(info.id(), force);
 
-    if (headingDotDir > 0 && direction.dot(direction) < 300.0f && enemy != nullptr)
-      command.Fire(ship.id());
-
-    const float angle = std::fmod(std::atan2(direction.y, direction.x), twoPi);
-
-    const float maxTorque = AICommand::kMaxTorque/5;
-    const float shortestStopTime = ship.angular_velocity() / maxTorque;
-    const float shortestStopDistance = ship.angular_velocity()*ship.angular_velocity() / (2 * maxTorque);
-    float wantAngle = shortestAngle(ship.orientation(), angle);
-        
-    float x = 0.5f - (ship.angular_velocity()*ship.angular_velocity()) / (4 * maxTorque*wantAngle);
-    float absx = std::abs(x);
-    if (std::abs(ship.angular_velocity() * input.delta_time()) >= std::abs(wantAngle))
-    {
-      command.SetShipTorque(ship.id(), -ship.angular_velocity() / input.delta_time());
-      continue;
-    }
-
-    float angleSign = wantAngle < 0 ? -1.f : 1.0f;
-    if (x < 0.0f)
-    {
-      command.SetShipTorque(ship.id(), maxTorque*angleSign);
-      continue;
-    }
-    else
-    {
-      command.SetShipTorque(ship.id(), -maxTorque*angleSign);
-      continue;
-    }
+    if (target && (target->position() - info.position()).lengthSquared() < 500 && 
+      info.velocity().normalized().dot((target->position() - info.position()).normalized()) > 0.95f)
+      command.Fire(info.id());
   }
 }

@@ -10,13 +10,13 @@ class ShipInfo
 public:
   /// Default constructor
   ShipInfo(uint32_t factionId, ShipId id, uint32_t hp, uint32_t maxHp, const Vec2f &pos, float orientation,
-    float mass, const Vec2f& velocity, float angularVelocity) :
+    float mass, const Vec2f& velocity) :
     factionId_(factionId),
     id_(id),
     hp_(hp),
     maxHp_(maxHp),
     pos_(pos), velocity_(velocity),
-    orientation_(orientation), angularVelocity_(angularVelocity),
+    orientation_(orientation),
     mass_(mass) {}
 
   /// Default destructor
@@ -46,14 +46,11 @@ public:
   /// Returns the velocity of the ship
   const Vec2f& velocity() const { return velocity_; }
 
-  /// Returns the angular velocity off the ship
-  float angular_velocity() const { return angularVelocity_; }
-
 private:
   uint32_t factionId_;
   ShipId id_;
   uint32_t hp_, maxHp_;
   Vec2f pos_, velocity_;
-  float orientation_, angularVelocity_;
+  float orientation_;
   float mass_;
 };

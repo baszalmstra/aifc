@@ -65,11 +65,8 @@ Battle::~Battle()
 }
 
 //-------------------------------------------------------------------------------------------------
-void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
+void Battle::Initialize(const std::vector<IAIPlugin*> &ais, uint32_t numAIs, uint32_t numShips)
 {
-  const uint32_t numAIs = 4;
-  const uint32_t numShips = 25;
-
   // Initialize random ais
   uint32_t randOffset = rand() % 4;
   for (uint32_t i = 0; i < numAIs; ++i)
@@ -102,17 +99,6 @@ void Battle::Initialize(const std::vector<IAIPlugin*> &ais)
       ship->set_orientation(std::atan2(startingOffsets[numAIs - 2][i].y, startingOffsets[numAIs - 2][i].x) + 3.141592654f);
     }
   }
-
-  /*ShipState* ship0 = factions_[0]->CreateShip();
-  ship0->set_position(Vec2f(-5, 0));
-  ship0->set_orientation(-1);
-  ship0->set_force(1);
-
-  ShipState* ship1 = factions_[1]->CreateShip();
-  ship1->set_position(Vec2f(5, 0));
-  ship1->set_orientation(1);
-  ship1->set_force(1);*/
-
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -137,10 +123,10 @@ void Battle::Update(float deltaTime)
       continue;
     }
 
-    // Check for ship ship collision
+    //// Check for ship ship collision
     //for (auto other = it + 1; other != ships_->end(); ++other)
     //{
-    //  if (TestCollision(*ship, *other, deltaTime))
+    //  if (&other->faction() != &ship->faction() && TestCollision(*ship, *other, deltaTime))
     //  {
     //    ship->set_hp(0);
     //    other->set_hp(0);

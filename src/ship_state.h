@@ -32,16 +32,10 @@ public:
   uint32_t id() const { return id_; }
 
   /// Sets the force on the ship
-  void set_force(float force) { force_ = force; }
+  void set_force(const Vec2f& force) { force_ = force; }
 
   /// Returns the current force on the ship
-  float force() const { return force_; }
-
-  /// Sets the torque on the ship
-  void set_torque(float torque) { torque_ = torque; }
-
-  //// Returns the torque on the ship
-  float torque() const { return torque_; }
+  Vec2f force() const { return force_; }
   
   /// Returns the mass of the ship
   float mass() const { return mass_; }
@@ -75,7 +69,7 @@ private:
   uint32_t id_;
   FactionState *faction_;
   uint16_t maxHp_, hp_;
-  float force_, torque_;
+  Vec2f force_;
   float mass_;
   float weaponEnergy_, weaponRechargeRate_;
 

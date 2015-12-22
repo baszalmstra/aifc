@@ -8,6 +8,8 @@
 #include <algorithm>
 #include "battle.h"
 #include <time.h>
+#include <rapidjson/document.h>
+#include <rapidjson/filereadstream.h>
 
 //-------------------------------------------------------------------------------------------------
 Application::Application() :
@@ -148,8 +150,7 @@ bool Application::Initialize()
   srand((uint32_t)time(nullptr));
 
   // Load the plugin with the given name
-  plugins_.emplace_back(PluginWrapper::LoadPlugin("testai"));
-  plugins_.emplace_back(PluginWrapper::LoadPlugin("babai"));
+  ReadConfig();
   if (std::any_of(plugins_.cbegin(), plugins_.cend(), [](const std::unique_ptr<PluginWrapper> &wrapper) { return !wrapper; }))
     return false;
 
@@ -157,7 +158,7 @@ bool Application::Initialize()
   std::vector<IAIPlugin*> plugins;
   std::transform(plugins_.begin(), plugins_.end(), std::back_inserter<std::vector<IAIPlugin*>>(plugins), [](const std::unique_ptr<PluginWrapper> &wrapper) { return wrapper->plugin(); });
   battle_ = std::unique_ptr<Battle>(new Battle());
-  battle_->Initialize(plugins);
+  battle_->Initialize(plugins, numAIs_, numShips_);
 
   return true;
 }
@@ -167,6 +168,45 @@ bool Application::Destroy()
 {
   // Shut down SDL
   SDL_Quit();
+
+  return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+bool Application::ReadConfig()
+{
+  using namespace rapidjson;
+
+  // Open the settings file
+  FILE* pFile = fopen("settings.json", "rb");
+  if (!pFile)
+    return false;
+
+  // Create a read stream
+  char buffer[65536];
+  FileReadStream is(pFile, buffer, sizeof(buffer));
+
+  // Parse the document
+  Document document;
+  document.ParseStream<0, UTF8<>, FileReadStream>(is);
+  if (!document.IsObject())
+    return false;
+
+  // Read plugins
+  if (document["plugins"].IsArray())
+  {
+    const auto &plugins = document["plugins"];
+    for (SizeType i = 0; i < plugins.Size(); ++i)
+    {
+      if (plugins[i].IsString())
+        plugins_.emplace_back(PluginWrapper::LoadPlugin(plugins[i].GetString()));
+    }
+  }
+
+  if (document["numAIs"].IsNumber())
+    numAIs_ = document["numAIs"].GetUint64();
+  if (document["numShips"].IsNumber())
+    numShips_ = document["numShips"].GetUint64();
 
   return true;
 }
